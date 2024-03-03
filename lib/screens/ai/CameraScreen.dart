@@ -6,6 +6,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartex/components/Button.dart';
+import 'package:smartex/constants.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -62,7 +64,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double width= MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
     if (controller == null || !controller.value.isInitialized) {
       return const Scaffold(
         body: Center(
@@ -70,17 +72,23 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
       );
     }
-    return Scaffold(
-      body: Column(
+    return Container(
+      color: CupertinoColors.black,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(child: Stack(
+          Expanded(
+              child: Stack(
+                alignment: Alignment.bottomCenter,
             children: [
-              CameraPreview(controller),
+              Center(child: CameraPreview(controller)),
               Center(
                 child: Container(
-                  width: width, // Largeur du rectangle
+                  width: width - 30, // Largeur du rectangle
                   height: 100.0, // Hauteur du rectangle
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: Colors.red,
                       width: 2.0,
@@ -88,13 +96,26 @@ class _CameraScreenState extends State<CameraScreen> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: MyActionButton(
+                  textColor: kPrimaryColor,
+                  label: "",
+                  color: kSecondaryColor,
+                  onPressed: () {
+                    _onCapturePressed(context);
+                  },
+                  icon: Icons.camera,
+                ),
+              ),
             ],
           )),
-          ElevatedButton(
-              onPressed: () {
-                _onCapturePressed(context);
-              },
-              child: Icon(Icons.camera)),
+
+          // ElevatedButton(
+          //     onPressed: () {
+          //       _onCapturePressed(context);
+          //     },
+          //     child: Icon(Icons.camera)),
         ],
       ),
     );
@@ -118,8 +139,10 @@ class _CameraScreenState extends State<CameraScreen> {
         var response = await request.send();
         if (response.statusCode == 200) {
           print(response);
-          var body=await response.stream.bytesToString();
+          var body = await response.stream.bytesToString();
           print(body);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(body)));
           Navigator.pop(context);
         } else {
           print('Erreur lors de l\'envoi de l\'image à l\'API');

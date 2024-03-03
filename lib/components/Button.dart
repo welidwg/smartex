@@ -9,11 +9,13 @@ class MyActionButton extends StatefulWidget {
         this.onPressed,
         required this.label,
         required this.color,
+        this.textColor,
         this.icon});
 
   late VoidCallback? onPressed;
   late String label;
   late Color color;
+  late Color? textColor;
   late IconData? icon;
 
   @override
@@ -27,7 +29,7 @@ class _MyActionButtonState extends State<MyActionButton> {
       color: widget.color,
       borderRadius: BorderRadius.all(Radius.circular(10.0)),
       elevation: 5.0,
-      textStyle: TextStyle(color: Colors.white,fontSize: 10),
+      textStyle: TextStyle(color: widget.textColor!=null ? widget.textColor :Colors.white,fontSize: 10),
       child: MaterialButton(
           padding: const EdgeInsets.all(0),
           onPressed: widget.onPressed,
@@ -46,7 +48,7 @@ class _MyActionButtonState extends State<MyActionButton> {
                 widget.icon != null
                     ? Icon(
                   widget.icon,
-                  color: kSecondaryColor,
+                  color: widget.textColor!=null ? widget.textColor :kSecondaryColor,
                   size: 20,
                 )
                     : Container()
