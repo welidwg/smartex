@@ -4,7 +4,10 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomDropdown.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/machines/items/machinItems/History.dart';
+
 class MachineDetails extends StatefulWidget {
   const MachineDetails({super.key});
 
@@ -13,13 +16,20 @@ class MachineDetails extends StatefulWidget {
 }
 
 class _MachineDetailsState extends State<MachineDetails> {
+  late TextEditingController codeCtrl;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    codeCtrl = TextEditingController(text: "65278");
+  }
 
-@override
+  @override
   Widget build(BuildContext context) {
-  final double width = MediaQuery.of(context).size.width;
+    final double width = MediaQuery.of(context).size.width;
 
-  return Column(
+    return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -29,82 +39,137 @@ class _MachineDetailsState extends State<MachineDetails> {
               color: kPrimaryColor,
               size: 20,
             ),
-            SizedBox(width: 10,),
+            SizedBox(
+              width: 10,
+            ),
             Text(
               "Machine : #65278",
               style: kTitleTextStyle(
                   customFontSize:
-                  width > kMobileWidth ? kTabletFont - 2 : kMobileFont),
+                      width > kMobileWidth ? kTabletFont - 2 : kMobileFont),
             )
           ],
         ),
-
-        SizedBox(height: 8,),
+        SizedBox(
+          height: 8,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            Text("Modifier la référence",textAlign: TextAlign.start,),
-            SizedBox(height: 10,),
-            CustomDropdown(items: ["ref1","ref3","ref2"], defaultItem: "ref2"),
+            Text(
+              "Modifier la référence",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomDropdown(
+                items: ["ref1", "ref3", "ref2"], defaultItem: "ref2"),
           ],
         ),
-        SizedBox(height: 8,),
+        SizedBox(
+          height: 8,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:  [
-            const Text("Modifier le code",textAlign: TextAlign.start,),
-            const SizedBox(height: 10,),
-            Input(label: "Code", is_Password: false, onChange: (value){},vPadding: 17,value: "65278",),
+          children: [
+            const Text(
+              "Modifier le code",
+              textAlign: TextAlign.start,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Input(
+              label: "Code",
+              is_Password: false,
+              onChange: (value) {},
+              vPadding: 17,
+              controller: codeCtrl,
+            ),
           ],
         ),
-        const SizedBox(height: 8,),
+        const SizedBox(
+          height: 8,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            Text("Modifier l'état",textAlign: TextAlign.start,),
-            SizedBox(height: 10,),
-            CustomDropdown(items: ["En panne","En marche"], defaultItem: "En marche"),
+            Text(
+              "Modifier l'état",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomDropdown(
+                items: ["En panne", "En marche"], defaultItem: "En marche"),
           ],
-        ), const SizedBox(height: 8,),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            Text("Modifier la chaîne",textAlign: TextAlign.start,),
-            SizedBox(height: 10,),
-            CustomDropdown(items: ["CH1","CH2","CH17"], defaultItem: "CH17"),
+            Text(
+              "Modifier la chaîne",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomDropdown(items: ["CH1", "CH2", "CH17"], defaultItem: "CH17"),
           ],
         ),
-        const SizedBox(height: 8,),
+        const SizedBox(
+          height: 8,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
-            Text("Modifier le parc",textAlign: TextAlign.start,),
-            SizedBox(height: 10,),
-            CustomDropdown(items: ["Parc stock","Parc occupée"], defaultItem: "Parc stock"),
+            Text(
+              "Modifier le parc",
+              textAlign: TextAlign.start,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomDropdown(
+                items: ["Parc stock", "Parc occupée"],
+                defaultItem: "Parc stock"),
           ],
         ),
-
-
         CustomSpacer(),
-
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
                 child: MyActionButton(
-                  label: "",
-                  color: kPrimaryColor,
-                  icon: Icons.save_as,
-                )),
+              label: "",
+              color: kPrimaryColor,
+              icon: Icons.save_as,
+            )),
             const SizedBox(
               width: 10,
             ),
             Expanded(
                 child: MyActionButton(
-                  label: "",
-                  color: kPrimaryColor,
-                  icon: Icons.save_as,
-                )),
+              label: "",
+              color: kPrimaryColor,
+              icon: Icons.manage_history,
+              onPressed: () {
+                //Navigator.pop(context);
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                    enableDrag: true,
+                    context: context,
+                    builder: (context) {
+                      return const ModalContent(
+                          content: HistoryMachine());
+                    });
+              },
+            )),
             const SizedBox(
               width: 10,
             ),
@@ -116,6 +181,7 @@ class _MachineDetailsState extends State<MachineDetails> {
           ],
         )
       ],
-    );;
+    );
+    ;
   }
 }
