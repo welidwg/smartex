@@ -36,7 +36,7 @@ class _MachinesScreenState extends State<MachinesScreen> {
                 title: "Liste des machines",
                 fontS:
                     width > kMobileWidth ? kTabletFont : kMobileTitleFont - 2,
-                icon: Icons.supervised_user_circle_outlined,
+                icon: CupertinoIcons.gear_solid,
                 color: kPrimaryColor,
               ),
             ]),

@@ -10,7 +10,8 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/constants.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+   CameraScreen({super.key, this.setter});
+  late Function? setter;
 
   static const String id = "camera_screen";
 
@@ -22,6 +23,7 @@ class _CameraScreenState extends State<CameraScreen> {
   late CameraController controller;
   late List cameras;
   late int selectedCameraIndex;
+  bool isLoading=false;
 
   @override
   void initState() {
@@ -65,7 +67,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    if (controller == null || !controller.value.isInitialized) {
+    if (controller == null || !controller.value.isInitialized || isLoading ) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -123,6 +125,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
   void _onCapturePressed(BuildContext context) async {
     try {
+      setState(() {
+        isLoading=true;
+      });
       XFile file = await controller.takePicture();
       String base64Image = base64Encode(File(file.path).readAsBytesSync());
       const url = 'http://192.168.1.16:5000/process_image';
@@ -138,9 +143,14 @@ class _CameraScreenState extends State<CameraScreen> {
       try {
         var response = await request.send();
         if (response.statusCode == 200) {
-          print(response);
           var body = await response.stream.bytesToString();
+          Map<String,dynamic> jsonResponse=json.decode(body);
+
           print(body);
+          widget.setter!(jsonResponse["text"][0]);
+          setState(() {
+
+          });
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(body)));
           Navigator.pop(context);

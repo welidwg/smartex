@@ -13,6 +13,8 @@ class Input extends StatefulWidget {
   late double? vPadding;
   late double? hPadding;
   final Function(String value) onChange;
+  final String? message;
+  final TextEditingController? controller;
 
   Input(
       {super.key,
@@ -24,6 +26,8 @@ class Input extends StatefulWidget {
       this.vPadding,
       this.hPadding,
       this.suffixIc,
+      this.message,
+         this.controller,
       this.isNumber});
 
   @override
@@ -31,19 +35,16 @@ class Input extends StatefulWidget {
 }
 
 class _InputState extends State<Input> {
-  late final TextEditingController controller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller = TextEditingController(text: widget.value ?? '');
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    controller.clear();
     super.dispose();
   }
 
@@ -52,10 +53,10 @@ class _InputState extends State<Input> {
     double width = MediaQuery.of(context).size.width;
     return TextFormField(
       cursorColor: kPrimaryColor,
-      controller: controller,
+      controller: widget.controller,
       validator: (value) {
         if (value?.isEmpty ?? true) {
-          return 'Please enter your name';
+          return widget.message ?? "erreur";
         }
         return null;
       },
@@ -102,6 +103,11 @@ class _InputState extends State<Input> {
           borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(7.0)),
         ),
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.red, width: 2.0),
+          borderRadius: BorderRadius.all(Radius.circular(7.0)),
+        ),
+        errorStyle: TextStyle(fontFamily: 'Font1',color: Colors.red)
       ),
     );
   }

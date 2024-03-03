@@ -3,11 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/ai/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 
-class MachinesList extends StatelessWidget {
+class MachinesList extends StatefulWidget {
   const MachinesList({super.key});
 
+  @override
+  State<MachinesList> createState() => _MachinesListState();
+}
+
+class _MachinesListState extends State<MachinesList> {
+  late TextEditingController codeCtrl;
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    codeCtrl=TextEditingController(text: "");
+  }
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -37,14 +50,16 @@ class MachinesList extends StatelessWidget {
               SizedBox(
                 width: width / 3,
                 child: Input(
+                  controller: codeCtrl,
                     vPadding: 0,
                     hPadding: 7,
                     suffixIc: GestureDetector(child:const Icon(Icons.qr_code_scanner_sharp,size: 20,),onTap: (){
-                      print("scan");
+                      _openCameraScreen(context);
                     },),
                     label: "Code",
                     is_Password: false,
                     onChange: (value) {}),
+
               ),
             ],
           ),
@@ -98,6 +113,20 @@ class MachinesList extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+  void _setCode(String value) {
+    setState(() {
+      codeCtrl=TextEditingController(text: value);
+    });
+  }
+  Future<void> _openCameraScreen(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+            setter: _setCode,
+          )),
     );
   }
 }

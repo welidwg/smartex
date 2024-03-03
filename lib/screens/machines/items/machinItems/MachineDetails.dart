@@ -99,6 +99,15 @@ class _MachineDetailsState extends State<MachineDetails> {
             const SizedBox(
               width: 10,
             ),
+            Expanded(
+                child: MyActionButton(
+                  label: "",
+                  color: kPrimaryColor,
+                  icon: Icons.save_as,
+                )),
+            const SizedBox(
+              width: 10,
+            ),
             MyActionButton(
               label: "",
               color: Colors.pink,
