@@ -20,10 +20,14 @@ class _AddMachineFormState extends State<AddMachineForm> {
   late String code = "";
   final _formKey = GlobalKey<FormState>();
   late TextEditingController codeCtrl;
+  late Map<int, dynamic> chaines={};
+  late Map<int, dynamic> parcs={};
+  late Map<int, dynamic> refs={};
+  late Map<int, dynamic> etats={};
 
   void _setCode(String value) {
     setState(() {
-      codeCtrl=TextEditingController(text: value);
+      codeCtrl = TextEditingController(text: value);
     });
   }
 
@@ -31,7 +35,17 @@ class _AddMachineFormState extends State<AddMachineForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    codeCtrl=TextEditingController(text: code);
+    codeCtrl = TextEditingController(text: code);
+    chaines[0] = "CH17";
+    chaines[1] = "CH18";
+    chaines[2] = "CH19";
+    refs[0] = "REF1";
+    refs[1] = "REF2";
+    refs[2] = "REF3";
+    parcs[0] = "Parc stock";
+    parcs[1] = "Parc occupé";
+    etats[0] = "En marche";
+    etats[1] = "En panne";
   }
 
   @override
@@ -65,19 +79,20 @@ class _AddMachineFormState extends State<AddMachineForm> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
+            children: [
+              const Text(
                 "Choisissez la référence",
                 textAlign: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              CustomDropdown(
-                  items: ["ref1", "ref3", "ref2"], defaultItem: "ref2"),
+              refs.keys.isNotEmpty
+                  ? CustomDropdown(items: refs, defaultItem: "ref2")
+                  : const CircularProgressIndicator()
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           Column(
@@ -111,16 +126,15 @@ class _AddMachineFormState extends State<AddMachineForm> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
+            children: [
+              const Text(
                 "Choisissez l'état",
                 textAlign: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              CustomDropdown(
-                  items: ["En panne", "En marche"], defaultItem: "En marche"),
+              CustomDropdown(items: etats, defaultItem: "En marche"),
             ],
           ),
           const SizedBox(
@@ -128,16 +142,17 @@ class _AddMachineFormState extends State<AddMachineForm> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
+            children: [
+              const Text(
                 "Choisissez la chaîne",
                 textAlign: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              CustomDropdown(
-                  items: ["CH1", "CH2", "CH17"], defaultItem: "CH17"),
+              chaines.keys.isEmpty
+                  ? const CircularProgressIndicator()
+                  : CustomDropdown(items: chaines, defaultItem: "CH17"),
             ],
           ),
           const SizedBox(
@@ -145,21 +160,20 @@ class _AddMachineFormState extends State<AddMachineForm> {
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
+            children: [
+              const Text(
                 "Choisissez le parc",
                 textAlign: TextAlign.start,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              CustomDropdown(
-                  items: ["Parc stock", "Parc occupée"],
-                  defaultItem: "Parc stock"),
+              parcs == null
+                  ? const CircularProgressIndicator()
+                  : CustomDropdown(items: parcs, defaultItem: "Parc stock"),
             ],
           ),
-          CustomSpacer(),
-
+          const CustomSpacer(),
           MyActionButton(
             label: "Ajouter",
             color: kPrimaryColor,

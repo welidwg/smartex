@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.smartex.smartex">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="smartex"
+        android:label="Smartex"
+       android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -43,3 +43,4 @@ TextStyle kContentTextStyle({double customFontSize=10})=>TextStyle(
     fontSize:customFontSize,
     color: kPrimaryColor,
 );
+String kUrlLaravel="http://192.168.1.16:8000/api";

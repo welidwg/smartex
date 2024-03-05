@@ -17,12 +17,26 @@ class MachineDetails extends StatefulWidget {
 
 class _MachineDetailsState extends State<MachineDetails> {
   late TextEditingController codeCtrl;
+  late Map<int, dynamic> chaines={};
+  late Map<int, dynamic> parcs={};
+  late Map<int, dynamic> refs={};
+  late Map<int, dynamic> etats={};
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     codeCtrl = TextEditingController(text: "65278");
+    chaines[0] = "CH17";
+    chaines[1] = "CH18";
+    chaines[2] = "CH19";
+    refs[0] = "REF1";
+    refs[1] = "REF2";
+    refs[2] = "REF3";
+    parcs[0] = "Parc stock";
+    parcs[1] = "Parc occupé";
+    etats[0] = "En marche";
+    etats[1] = "En panne";
   }
 
   @override
@@ -55,16 +69,15 @@ class _MachineDetailsState extends State<MachineDetails> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
+          children: [
+            const Text(
               "Modifier la référence",
               textAlign: TextAlign.start,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            CustomDropdown(
-                items: ["ref1", "ref3", "ref2"], defaultItem: "ref2"),
+            CustomDropdown(items: refs, defaultItem: "ref2"),
           ],
         ),
         SizedBox(
@@ -94,16 +107,15 @@ class _MachineDetailsState extends State<MachineDetails> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
+          children: [
+            const Text(
               "Modifier l'état",
               textAlign: TextAlign.start,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            CustomDropdown(
-                items: ["En panne", "En marche"], defaultItem: "En marche"),
+            CustomDropdown(items: etats, defaultItem: "En marche"),
           ],
         ),
         const SizedBox(
@@ -111,15 +123,15 @@ class _MachineDetailsState extends State<MachineDetails> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
+          children: [
+            const Text(
               "Modifier la chaîne",
               textAlign: TextAlign.start,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            CustomDropdown(items: ["CH1", "CH2", "CH17"], defaultItem: "CH17"),
+            CustomDropdown(items: chaines, defaultItem: "CH17"),
           ],
         ),
         const SizedBox(
@@ -127,20 +139,18 @@ class _MachineDetailsState extends State<MachineDetails> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
+          children: [
+            const Text(
               "Modifier le parc",
               textAlign: TextAlign.start,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            CustomDropdown(
-                items: ["Parc stock", "Parc occupée"],
-                defaultItem: "Parc stock"),
+            CustomDropdown(items: parcs, defaultItem: "Parc stock"),
           ],
         ),
-        CustomSpacer(),
+        const CustomSpacer(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -161,12 +171,11 @@ class _MachineDetailsState extends State<MachineDetails> {
               onPressed: () {
                 //Navigator.pop(context);
                 showModalBottomSheet(
-                  isScrollControlled: true,
+                    isScrollControlled: true,
                     enableDrag: true,
                     context: context,
                     builder: (context) {
-                      return const ModalContent(
-                          content: HistoryMachine());
+                      return const ModalContent(content: HistoryMachine());
                     });
               },
             )),

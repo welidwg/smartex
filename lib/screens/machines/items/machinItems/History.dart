@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/machines/items/machinItems/HistoryCard.dart';
 
 class HistoryMachine extends StatefulWidget {
   const HistoryMachine({super.key});
@@ -39,33 +40,12 @@ class _HistoryMachineState extends State<HistoryMachine> {
         Container(
           height: 300,
           child: ListView(
-            children: [
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children:  [
-                      const  CircleAvatar(
-                        backgroundColor: kSecondaryColor,
-                        child: Icon(
-                          Icons.history,
-                          color: kPrimaryColor,
-                        ),
-                      ),
-                      const SizedBox(width: 10,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const[
-                          Text("10/05/2017"),
-                          Text("Panne")
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              )
+            children: const [
+              HistoryCard(),
+              HistoryCard(),
+              HistoryCard(),
+              HistoryCard(),
+              HistoryCard(),
             ],
           ),
         )

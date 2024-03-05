@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smartex/components/Cards/Card.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/users/Items/UserDetails.dart';
 
 class UserCard extends StatefulWidget {
-  const UserCard({super.key});
+  late Map<String, dynamic> user = {};
+  late  Function? updateView;
+
+  UserCard({super.key, required this.user,this.updateView});
 
   @override
   State<UserCard> createState() => _UserCardState();
@@ -21,13 +25,16 @@ class _UserCardState extends State<UserCard> {
       child: GestureDetector(
         onTap: () {
           showModalBottomSheet(
-            backgroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
               context: context,
               builder: ((context) {
-                return const ModalContent(content: UserDetails());
+                return ModalContent(
+                    content: UserDetails(
+                  user: widget.user,
+                      updateView: widget.updateView,
+                ));
               }),
-            isScrollControlled: true
-          );
+              isScrollControlled: true);
         },
         child: CustomCard(
           width: width > kMobileWidth ? width / 2 : width,
@@ -38,6 +45,10 @@ class _UserCardState extends State<UserCard> {
                 children: [
                   CircleAvatar(
                     backgroundColor: kSecondaryColor.withOpacity(0.8),
+                    child: const Icon(
+                      FontAwesomeIcons.user,
+                      color: kPrimaryColor,
+                    ),
                   ),
                   const SizedBox(
                     width: 10,
@@ -46,7 +57,7 @@ class _UserCardState extends State<UserCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Username",
+                        widget.user["username"],
                         style: kContentTextStyle(customFontSize: kMobileFont)
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
@@ -54,7 +65,9 @@ class _UserCardState extends State<UserCard> {
                         height: 3,
                       ),
                       Text(
-                        "Administrateur",
+                        widget.user["role"] == 0
+                            ? "Administrateur"
+                            : "Technicien",
                         style: kContentTextStyle(customFontSize: 14).copyWith(
                             fontWeight: FontWeight.normal, color: Colors.black),
                       )

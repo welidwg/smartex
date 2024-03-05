@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late Timer timer;
   DateTime today = DateTime.now();
 
   Future<DateTime> _getCurrentTime() async {
@@ -32,13 +33,21 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     today = DateTime.now();
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        today = DateTime.now();
-      });
-    });
+    _setDate();
   }
-
+_setDate(){
+  timer=Timer.periodic(const Duration(seconds: 1), (timer) {
+    setState(() {
+      today = DateTime.now();
+    });
+  });
+}
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    timer.cancel();
+  }
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -48,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 IntrinsicHeight(
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Row(
                       children: [
                         CustomCard(

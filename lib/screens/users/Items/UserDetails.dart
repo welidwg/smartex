@@ -1,20 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/Api/users/UsersRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomDropdown.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/constants.dart';
 
 class UserDetails extends StatefulWidget {
-  const UserDetails({super.key});
+  Map<String, dynamic> user = {};
+  late Function? updateView;
+
+  UserDetails({super.key, required this.user,this.updateView});
 
   @override
   State<UserDetails> createState() => _UserDetailsState();
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  String? selectedRole = 'Technicien';
+  late int? selectedRole ;
+  late Map<int, dynamic> roles = {};
+  TextEditingController username = TextEditingController();
+  TextEditingController newPass = TextEditingController();
+  UsersRequestManager manager = UsersRequestManager();
+  bool isLoading=false;
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    roles[0] = "Administrateur";
+    roles[1] = "Technicien";
+    selectedRole=widget.user["role"];
+    username=TextEditingController(text: widget.user["username"]);
+  }
+  _setRole(int value) {
+    setState(() {
+      selectedRole = value;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -24,11 +49,11 @@ class _UserDetailsState extends State<UserDetails> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              CupertinoIcons.person,
+              Icons.person,
               color: kPrimaryColor,
             ),
             Text(
-              "Username",
+              widget.user['username'],
               style: kTitleTextStyle(
                   customFontSize:
                       width > kMobileWidth ? kTabletFont - 2 : kMobileFont),
@@ -41,7 +66,7 @@ class _UserDetailsState extends State<UserDetails> {
         Input(
             label: "Nom d'utilisateur",
             is_Password: false,
-            value: "Username",
+            controller: username,
             onChange: (value) {}),
         const SizedBox(
           height: 8,
@@ -49,6 +74,7 @@ class _UserDetailsState extends State<UserDetails> {
         Input(
             label: "Nouveau Mot de passe",
             is_Password: true,
+            controller: newPass,
             onChange: (value) {}),
         const SizedBox(
           height: 8,
@@ -67,28 +93,41 @@ class _UserDetailsState extends State<UserDetails> {
             const SizedBox(
               height: 8,
             ),
-            const CustomDropdown(
-                items: ['Administrateur', 'Technicien'],
-                defaultItem: 'Administrateur'),
+            CustomDropdown(items: roles, defaultItem: roles[selectedRole],setter: _setRole,),
             const SizedBox(
               height: 8,
             ),
+            isLoading ? Center(child: LoadingComponent()) :
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                     child: MyActionButton(
+                      isLoading: isLoading,
                   label: "",
                   color: kPrimaryColor,
                   icon: Icons.save_as,
+                      onPressed: ()async{
+                        setState(() {
+                          isLoading=true;
+                        });
+                        await _saveUserData(context);
+                      },
                 )),
                 const SizedBox(
                   width: 10,
                 ),
                 MyActionButton(
                   label: "",
+                  isLoading: isLoading,
                   color: Colors.pink,
                   icon: Icons.delete_sweep,
+                  onPressed: ()async{
+                    setState(() {
+                      isLoading=true;
+                    });
+                    await _deleteUser(context);
+                  },
                 )
               ],
             )
@@ -96,5 +135,44 @@ class _UserDetailsState extends State<UserDetails> {
         )
       ],
     );
+  }
+  _deleteUser(BuildContext context)async{
+    Map<String,dynamic> data={
+      "id":widget.user["id"],
+    };
+    var res=await manager.deleteUser(data);
+    if (res['type'] == "success") {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(res['message'])));
+      widget.updateView!();
+      setState(() {
+        isLoading=false;
+      });
+
+    } else {
+      print(res['message']);
+    }
+
+  }
+  _saveUserData(BuildContext context)async{
+    Map<String,dynamic> data={
+      "id":widget.user["id"],
+      "username":username.text,
+      "newPass":newPass.text,
+      "role":selectedRole
+    };
+    var res=await manager.editUser(data);
+    if (res['type'] == "success") {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(res['message'])));
+      widget.updateView!();
+      setState(() {
+        isLoading=false;
+      });
+    } else {
+      print(res['message']);
+    }
   }
 }

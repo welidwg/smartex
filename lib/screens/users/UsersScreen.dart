@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:smartex/Api/users/UsersRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/Cards/Card.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/BlurredModal.dart';
 import 'package:smartex/components/Titles/HeadLine.dart';
 import 'package:smartex/constants.dart';
@@ -23,17 +27,35 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
+  late List<dynamic> users = [];
+  UsersRequestManager manager = UsersRequestManager();
+  String search = '';
+  bool isLoading = true;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("the width is : ${widget.width!}");
+    initUsers();
+  }
+
+  initUsers() async {
+    users = await manager.getUsersList(search: search);
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+  _updateView() async {
+
+    await initUsers();
   }
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 16),
+      margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         children: [
           Row(
@@ -54,8 +76,14 @@ class _UsersScreenState extends State<UsersScreen> {
                       backgroundColor: Colors.transparent,
                       context: context,
                       isScrollControlled: true,
+                      isDismissible: false,
                       builder: ((context) {
-                        return AddUserForm();
+                        return Builder(builder: (BuildContext ct) {
+                          return AddUserForm(
+                            context: ct,
+                            updateView: initUsers,
+                          );
+                        });
                       }));
                 },
                 elevation: 0,
@@ -80,8 +108,18 @@ class _UsersScreenState extends State<UsersScreen> {
                     hPadding: 10,
                     label: "Recherche",
                     is_Password: false,
-                    suffixIc: const Icon(Icons.search,color: kPrimaryColor,),
-                    onChange: (value) {}),
+                    suffixIc: isLoading
+                        ?  LoadingComponent()
+                        : const Icon(Icons.search),
+                    onChange: (value) {
+                      Future.delayed(const Duration(milliseconds: 1500), () {
+                        setState(() {
+                          search = value;
+                          isLoading=true;
+                        });
+                        initUsers();
+                      });
+                    }),
               ),
             ],
           ),
@@ -103,21 +141,18 @@ class _UsersScreenState extends State<UsersScreen> {
                 ),
               ],
             ),
-            child: ListView(
-              physics: BouncingScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.only(bottom: 16),
-              children: const [
-                UserCard(),
-                UserCard(),
-                UserCard(),
-                UserCard(),
-                UserCard(),
-                UserCard(),
-                UserCard(),
-                UserCard(),
-              ],
-            ),
+            child: users.isEmpty
+                ? Container(width: width, child: Text("Aucune utulisateur"))
+                : ListView(
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(bottom: 16),
+                    children: users.map((e) {
+                      return UserCard(
+                        user: e,
+                        updateView: initUsers,
+                      );
+                    }).toList()),
           ))
         ],
       ),

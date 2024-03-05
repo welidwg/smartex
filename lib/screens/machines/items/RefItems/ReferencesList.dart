@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
+import 'package:smartex/screens/machines/items/RefItems/AllRefs.dart';
 
 class ReferencesList extends StatelessWidget {
   const ReferencesList({super.key});
@@ -68,12 +70,24 @@ class ReferencesList extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             //padding: EdgeInsets.only(bottom: 16),
             children: const [
-              MachineCard(type: "re",),
-              MachineCard(type: "re",),
-              MachineCard(type: "re",),
-              MachineCard(type: "re",),
-              MachineCard(type: "re",),
-              MachineCard(type: "re",),
+              MachineCard(
+                type: "re",
+              ),
+              MachineCard(
+                type: "re",
+              ),
+              MachineCard(
+                type: "re",
+              ),
+              MachineCard(
+                type: "re",
+              ),
+              MachineCard(
+                type: "re",
+              ),
+              MachineCard(
+                type: "re",
+              ),
             ],
           ),
         ),
@@ -83,11 +97,22 @@ class ReferencesList extends StatelessWidget {
         GestureDetector(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text(
-                "Afficher tous",
-                style: TextStyle(
-                    color: kPrimaryColor, fontWeight: FontWeight.bold),
+            children: [
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return const ModalContent(
+                            content: AllReferenceScreen());
+                      });
+                },
+                child: const Text(
+                  "Afficher tous",
+                  style: TextStyle(
+                      color: kPrimaryColor, fontWeight: FontWeight.bold),
+                ),
               ),
               Icon(Icons.keyboard_arrow_down)
             ],

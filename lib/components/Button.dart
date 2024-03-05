@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/constants.dart';
 
 class MyActionButton extends StatefulWidget {
@@ -10,6 +11,7 @@ class MyActionButton extends StatefulWidget {
         required this.label,
         required this.color,
         this.textColor,
+        this.isLoading=false,
         this.icon});
 
   late VoidCallback? onPressed;
@@ -17,6 +19,7 @@ class MyActionButton extends StatefulWidget {
   late Color color;
   late Color? textColor;
   late IconData? icon;
+  bool isLoading=false;
 
   @override
   State<MyActionButton> createState() => _MyActionButtonState();
@@ -27,7 +30,7 @@ class _MyActionButtonState extends State<MyActionButton> {
   Widget build(BuildContext context) {
     return Material(
       color: widget.color,
-      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      borderRadius: const BorderRadius.all(Radius.circular(10.0)),
       elevation: 5.0,
       textStyle: TextStyle(color: widget.textColor!=null ? widget.textColor :Colors.white,fontSize: 10),
       child: MaterialButton(
@@ -37,7 +40,7 @@ class _MyActionButtonState extends State<MyActionButton> {
             padding: const EdgeInsets.all(13.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: widget.isLoading ? [LoadingComponent(color: kSecondaryColor,)] : [
                 Text(
                   widget.label,
                   style:  TextStyle(color: kSecondaryColor,fontSize: 15,fontWeight: FontWeight.bold,fontFamily: 'Font1')
