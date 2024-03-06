@@ -41,11 +41,9 @@ class _UsersScreenState extends State<UsersScreen> {
   initUsers() async {
     users = await manager.getUsersList(search: search);
     setState(() {
-      isLoading=false;
+      isLoading = false;
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,13 +103,13 @@ class _UsersScreenState extends State<UsersScreen> {
                     label: "Recherche",
                     is_Password: false,
                     suffixIc: isLoading
-                        ?  LoadingComponent()
+                        ? LoadingComponent()
                         : const Icon(Icons.search),
                     onChange: (value) {
                       Future.delayed(const Duration(milliseconds: 1500), () {
                         setState(() {
                           search = value;
-                          isLoading=true;
+                          isLoading = true;
                         });
                         initUsers();
                       });
@@ -138,7 +136,15 @@ class _UsersScreenState extends State<UsersScreen> {
               ],
             ),
             child: users.isEmpty
-                ? Container(width: width, child: Text("Aucune utulisateur"))
+                ? SizedBox(
+                    width: width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const[
+                         Center(child: Text("Aucun utilisateur trouvé")),
+                      ],
+                    ))
                 : ListView(
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
