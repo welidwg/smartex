@@ -89,28 +89,13 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 //padding: EdgeInsets.only(bottom: 16),
-                children: const [
+                children:  [
                   MachineCard(
                     type: "ma",
+                    item: {},
+                    updateView: (){},
                   ),
-                  MachineCard(
-                    type: "ma",
-                  ),
-                  MachineCard(
-                    type: "ma",
-                  ),
-                  MachineCard(
-                    type: "ma",
-                  ),
-                  MachineCard(
-                    type: "ma",
-                  ),
-                  MachineCard(
-                    type: "ma",
-                  ),
-                  MachineCard(
-                    type: "ma",
-                  ),
+
                 ],
               ),
             )

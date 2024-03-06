@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:smartex/Api/chaines/ChainesRequestManager.dart';
+import 'package:smartex/Api/etat/EtatRequestManager.dart';
+import 'package:smartex/Api/machines/MachinesRequestManager.dart';
+import 'package:smartex/Api/references/ReferencesRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomDropdown.dart';
 import 'package:smartex/components/CustomSpacer.dart';
@@ -20,14 +25,34 @@ class _AddMachineFormState extends State<AddMachineForm> {
   late String code = "";
   final _formKey = GlobalKey<FormState>();
   late TextEditingController codeCtrl;
-  late Map<int, dynamic> chaines={};
-  late Map<int, dynamic> parcs={};
-  late Map<int, dynamic> refs={};
-  late Map<int, dynamic> etats={};
+  late List<dynamic> chaines = [];
+  late Map<int, dynamic> parcs = {};
+  late List<dynamic> refs = [];
+  late List<dynamic> etats = [];
+  late int defaultChaine;
+  late int defaultEtat;
+  late int defaultRef;
+  late int defaultParc = 0;
+  ChainesRequestManager chaineManager = ChainesRequestManager();
+  EtatRequestManager etatManager = EtatRequestManager();
+  ReferencesRequestManager refManager = ReferencesRequestManager();
+  MachinesRequestManager machineManager = MachinesRequestManager();
 
   void _setCode(String value) {
     setState(() {
       codeCtrl = TextEditingController(text: value);
+    });
+  }
+
+  initList() async {
+    chaines = await chaineManager.getChainesList(search: "");
+    etats = await etatManager.getEtatList(search: "");
+    refs = await refManager.getRefsList(search: "");
+    setState(() {
+      defaultChaine = chaines.first["id"];
+      defaultEtat = etats.first["id"];
+      defaultRef = refs.first["id"];
+      defaultParc = 0;
     });
   }
 
@@ -36,16 +61,9 @@ class _AddMachineFormState extends State<AddMachineForm> {
     // TODO: implement initState
     super.initState();
     codeCtrl = TextEditingController(text: code);
-    chaines[0] = "CH17";
-    chaines[1] = "CH18";
-    chaines[2] = "CH19";
-    refs[0] = "REF1";
-    refs[1] = "REF2";
-    refs[2] = "REF3";
     parcs[0] = "Parc stock";
     parcs[1] = "Parc occupé";
-    etats[0] = "En marche";
-    etats[1] = "En panne";
+    initList();
   }
 
   @override
@@ -63,7 +81,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
                 color: kPrimaryColor,
                 size: 20,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Text(
@@ -74,7 +92,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           Column(
@@ -87,9 +105,44 @@ class _AddMachineFormState extends State<AddMachineForm> {
               const SizedBox(
                 height: 10,
               ),
-              refs.keys.isNotEmpty
-                  ? CustomDropdown(items: refs, defaultItem: "ref2")
-                  : const CircularProgressIndicator()
+              refs.isEmpty
+                  ? kPlaceholder
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 19),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kPrimaryColor, width: 2),
+                          borderRadius: BorderRadius.circular(7)),
+                      child: DropdownButton(
+                          elevation: 0,
+                          dropdownColor: kSecondaryColor,
+                          style: const TextStyle(
+                              color: kPrimaryColor, fontFamily: "Font1"),
+                          borderRadius: BorderRadius.circular(10),
+                          isExpanded: true,
+                          value: defaultRef,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          items: refs.map((value) {
+                            return DropdownMenuItem(
+                              value: value["id"],
+                              child: Text(
+                                value["ref"],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width > kMobileWidth ? 18 : 13,
+                                    fontFamily: "Font1"),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (dynamic newVal) {
+                            setState(() {
+                              defaultRef = newVal;
+                            });
+                            // widget.setter!(int.parse(newVal));
+                          }),
+                    ),
             ],
           ),
           const SizedBox(
@@ -134,7 +187,44 @@ class _AddMachineFormState extends State<AddMachineForm> {
               const SizedBox(
                 height: 10,
               ),
-              CustomDropdown(items: etats, defaultItem: "En marche"),
+              etats.isEmpty
+                  ? kPlaceholder
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 19),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kPrimaryColor, width: 2),
+                          borderRadius: BorderRadius.circular(7)),
+                      child: DropdownButton(
+                          elevation: 0,
+                          dropdownColor: kSecondaryColor,
+                          style: const TextStyle(
+                              color: kPrimaryColor, fontFamily: "Font1"),
+                          borderRadius: BorderRadius.circular(10),
+                          isExpanded: true,
+                          value: defaultEtat,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          items: etats.map((value) {
+                            return DropdownMenuItem(
+                              value: value["id"],
+                              child: Text(
+                                value["libelle"],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width > kMobileWidth ? 18 : 13,
+                                    fontFamily: "Font1"),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (dynamic newVal) {
+                            setState(() {
+                              defaultEtat = newVal;
+                            });
+                            // widget.setter!(int.parse(newVal));
+                          }),
+                    ),
             ],
           ),
           const SizedBox(
@@ -150,9 +240,44 @@ class _AddMachineFormState extends State<AddMachineForm> {
               const SizedBox(
                 height: 10,
               ),
-              chaines.keys.isEmpty
-                  ? const CircularProgressIndicator()
-                  : CustomDropdown(items: chaines, defaultItem: "CH17"),
+              chaines.isEmpty
+                  ? kPlaceholder
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 19),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kPrimaryColor, width: 2),
+                          borderRadius: BorderRadius.circular(7)),
+                      child: DropdownButton(
+                          elevation: 0,
+                          dropdownColor: kSecondaryColor,
+                          style: const TextStyle(
+                              color: kPrimaryColor, fontFamily: "Font1"),
+                          borderRadius: BorderRadius.circular(10),
+                          isExpanded: true,
+                          value: defaultChaine,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          items: chaines.map((value) {
+                            return DropdownMenuItem(
+                              value: value["id"],
+                              child: Text(
+                                value["libelle"],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width > kMobileWidth ? 18 : 13,
+                                    fontFamily: "Font1"),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (dynamic newVal) {
+                            setState(() {
+                              defaultChaine = newVal;
+                            });
+                            // widget.setter!(int.parse(newVal));
+                          }),
+                    ),
             ],
           ),
           const SizedBox(
@@ -170,17 +295,51 @@ class _AddMachineFormState extends State<AddMachineForm> {
               ),
               parcs == null
                   ? const CircularProgressIndicator()
-                  : CustomDropdown(items: parcs, defaultItem: "Parc stock"),
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 19),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kPrimaryColor, width: 2),
+                          borderRadius: BorderRadius.circular(7)),
+                      child: DropdownButton(
+                          elevation: 0,
+                          dropdownColor: kSecondaryColor,
+                          style: const TextStyle(
+                              color: kPrimaryColor, fontFamily: "Font1"),
+                          borderRadius: BorderRadius.circular(10),
+                          isExpanded: true,
+                          value: defaultParc,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.arrow_drop_down),
+                          items: parcs.keys.map((int value) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(
+                                parcs[value],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width > kMobileWidth ? 18 : 13,
+                                    fontFamily: "Font1"),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (dynamic newVal) {
+                            setState(() {
+                              defaultParc = newVal;
+                            });
+                            // widget.setter!(int.parse(newVal));
+                          }),
+                    ),
             ],
           ),
           const CustomSpacer(),
           MyActionButton(
             label: "Ajouter",
             color: kPrimaryColor,
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')));
+                await _addMachine(context);
               }
             },
           )
@@ -198,5 +357,24 @@ class _AddMachineFormState extends State<AddMachineForm> {
                 setter: _setCode,
               )),
     );
+  }
+
+  _addMachine(BuildContext context) async {
+    Map<String, dynamic> data = {
+      "code": codeCtrl.text,
+      "id_etat": defaultEtat,
+      "id_chaine": defaultChaine,
+      "id_reference": defaultRef,
+      "parc": defaultParc
+    };
+    var res = await machineManager.addMachines(data);
+    if (res["type"] == "success") {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(res['message'])));
+      setState(() {});
+    } else {
+      print(res['message']);
+    }
   }
 }

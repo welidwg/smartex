@@ -34,7 +34,6 @@ class _UsersScreenState extends State<UsersScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initUsers();
   }
@@ -46,10 +45,7 @@ class _UsersScreenState extends State<UsersScreen> {
     });
   }
 
-  _updateView() async {
 
-    await initUsers();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -184,7 +184,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: Container(
                       color: CupertinoColors.white,
                       width: width,
-                      height: width > kMobileWidth ? height : height - 100,
+                      height: width > kMobileWidth ? height : height - 200,
                       child: currentPage),
                 ),
               )

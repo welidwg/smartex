@@ -4,7 +4,7 @@ import 'package:smartex/constants.dart';
 
 class CustomDropdown extends StatefulWidget {
   final Map<int, dynamic> items;
-  final String defaultItem;
+  final int defaultItem;
   late Function(int value)? setter;
 
   CustomDropdown(
@@ -15,20 +15,17 @@ class CustomDropdown extends StatefulWidget {
 }
 
 class _CustomDropdownState extends State<CustomDropdown> {
-  late String selectedItem = '';
+  late int selectedItem = 0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    selectedItem = widget.items.keys.first.toString();
-    print(selectedItem);
+    selectedItem = widget.defaultItem;
   }
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 19),
       decoration: BoxDecoration(
@@ -46,8 +43,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
           },
           icon: const Icon(Icons.arrow_drop_down),
           items: widget.items.keys.map((int key) {
-            return DropdownMenuItem<String>(
-              value: key.toString(),
+            return DropdownMenuItem(
+              value: key,
               child: Text(
                 widget.items[key],
                 style: TextStyle(

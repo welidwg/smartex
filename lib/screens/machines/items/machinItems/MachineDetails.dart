@@ -77,7 +77,7 @@ class _MachineDetailsState extends State<MachineDetails> {
             const SizedBox(
               height: 10,
             ),
-            CustomDropdown(items: refs, defaultItem: "ref2"),
+            CustomDropdown(items: refs, defaultItem: 0),
           ],
         ),
         SizedBox(
@@ -115,7 +115,7 @@ class _MachineDetailsState extends State<MachineDetails> {
             const SizedBox(
               height: 10,
             ),
-            CustomDropdown(items: etats, defaultItem: "En marche"),
+            CustomDropdown(items: etats, defaultItem: 0),
           ],
         ),
         const SizedBox(
@@ -131,7 +131,7 @@ class _MachineDetailsState extends State<MachineDetails> {
             const SizedBox(
               height: 10,
             ),
-            CustomDropdown(items: chaines, defaultItem: "CH17"),
+            CustomDropdown(items: chaines, defaultItem: 0),
           ],
         ),
         const SizedBox(
@@ -147,7 +147,7 @@ class _MachineDetailsState extends State<MachineDetails> {
             const SizedBox(
               height: 10,
             ),
-            CustomDropdown(items: parcs, defaultItem: "Parc stock"),
+            CustomDropdown(items: parcs, defaultItem: 0),
           ],
         ),
         const CustomSpacer(),

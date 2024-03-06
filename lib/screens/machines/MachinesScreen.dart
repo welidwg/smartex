@@ -4,6 +4,7 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/Cards/Card.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/components/Titles/HeadLine.dart';
 import 'package:smartex/constants.dart';
@@ -23,11 +24,27 @@ class MachinesScreen extends StatefulWidget {
 }
 
 class _MachinesScreenState extends State<MachinesScreen> {
+  bool refresh = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  updateView(bool newVal) {
+    setState(() {
+      refresh = newVal;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
 
     return Container(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         margin: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
@@ -41,72 +58,11 @@ class _MachinesScreenState extends State<MachinesScreen> {
               ),
             ]),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: MyActionButton(
-                    onPressed: (){
-                      showModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: ((context) {
-                            return const ModalContent(content: AddRefForm());
-                          }),
-                          isScrollControlled: true
-                      );
-                    },
-                    label: "Référence",
-                    color: kPrimaryColor,
-                    icon: CupertinoIcons.plus,
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: MyActionButton(
-                    label: "Machine",
-                    color: kPrimaryColor,
-                    icon: CupertinoIcons.plus,
-                    onPressed: (){
-                      showModalBottomSheet(
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: ((context) {
-                            return const ModalContent(content: AddMachineForm());
-                          }),
-                          isScrollControlled: true
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: width > kMobileWidth ? width / 2 : width - 90,
-                  child: Input(
-                    vPadding: 0,
-                      label: "Recherche",
-                      is_Password: false,
-                      suffixIc: GestureDetector(child: const Icon(Icons.search)),
-                      onChange: (value) {}),
-                ),
-              ],
-            ),
-            const CustomSpacer(),
             const ReferencesList(),
+            const CustomSpacer(),
             const MachinesList()
-
-
           ],
         ));
   }

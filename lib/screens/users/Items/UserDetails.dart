@@ -18,7 +18,7 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  late int? selectedRole ;
+  late int selectedRole =0;
   late Map<int, dynamic> roles = {};
   TextEditingController username = TextEditingController();
   TextEditingController newPass = TextEditingController();
@@ -93,7 +93,7 @@ class _UserDetailsState extends State<UserDetails> {
             const SizedBox(
               height: 8,
             ),
-            CustomDropdown(items: roles, defaultItem: roles[selectedRole],setter: _setRole,),
+            CustomDropdown(items: roles, defaultItem: selectedRole,setter: _setRole,),
             const SizedBox(
               height: 8,
             ),
@@ -168,11 +168,12 @@ class _UserDetailsState extends State<UserDetails> {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(res['message'])));
       widget.updateView!();
-      setState(() {
-        isLoading=false;
-      });
+
     } else {
       print(res['message']);
     }
+    setState(() {
+      isLoading=false;
+    });
   }
 }

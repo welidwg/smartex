@@ -1,14 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/Api/references/ReferencesRequestManager.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Title.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/ai/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 
 class AllReferenceScreen extends StatefulWidget {
-  const AllReferenceScreen({super.key});
+  late List<dynamic> refs;
+  late Function updateView;
+
+  AllReferenceScreen({super.key, required refs,required this.updateView});
 
   @override
   State<AllReferenceScreen> createState() => _AllReferenceScreenState();
@@ -16,28 +21,24 @@ class AllReferenceScreen extends StatefulWidget {
 
 class _AllReferenceScreenState extends State<AllReferenceScreen> {
   late TextEditingController codeCtrl;
+  late List<dynamic> references = [];
+  ReferencesRequestManager manager = ReferencesRequestManager();
+  String search = '';
+  bool isLoading = true;
+
+  initRefs() async {
+    references = await manager.getRefsList(search: search);
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     codeCtrl = TextEditingController(text: "");
-  }
-
-  Future<void> _openCameraScreen(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CameraScreen(
-            setter: _setCode,
-          )),
-    );
-  }
-
-  void _setCode(String value) {
-    setState(() {
-      codeCtrl = TextEditingController(text: value);
-    });
+    initRefs();
   }
 
   @override
@@ -58,12 +59,17 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
                 Icons.search,
                 size: 20,
               ),
-              onTap: () {
-              },
+              onTap: () {},
             ),
             label: "Référence",
             is_Password: false,
-            onChange: (value) {}),
+            onChange: (value) {
+              setState(() {
+                search=value;
+                isLoading=true;
+              });
+              initRefs();
+            }),
         const CustomSpacer(),
         Container(
           height: 300,
@@ -72,7 +78,7 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: CupertinoColors.white,
-            boxShadow:  const [
+            boxShadow: const [
               BoxShadow(
                 color: kSecondaryColor,
                 spreadRadius: 2,
@@ -81,35 +87,27 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
               ),
             ],
           ),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            //padding: EdgeInsets.only(bottom: 16),
-            children: const [
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-            ],
-          ),
+          child: isLoading
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LoadingComponent(),
+                  ],
+                )
+              : references.isEmpty
+                  ? const Text("Aucune référence ajoutée")
+                  : ListView(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      //padding: EdgeInsets.only(bottom: 16),
+                      children: references.map((e) {
+                        return MachineCard(
+                          type: "re",
+                          item: e,
+                          updateView: widget.updateView,
+                        );
+                      }).toList()),
         )
       ],
     );

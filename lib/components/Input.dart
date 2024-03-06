@@ -52,6 +52,10 @@ class _InputState extends State<Input> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return TextFormField(
+      onTapOutside: (e){
+        FocusScope.of(context).unfocus();
+      },
+
       cursorColor: kPrimaryColor,
       controller: widget.controller,
       validator: (value) {

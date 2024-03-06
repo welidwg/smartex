@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 const  kPrimaryColor=Color(0xFF27306D);
 const  kSecondaryColor=Color(0xFFDEE0ED);
@@ -44,3 +46,16 @@ TextStyle kContentTextStyle({double customFontSize=10})=>TextStyle(
     color: kPrimaryColor,
 );
 String kUrlLaravel="http://192.168.1.16:8000/api";
+
+Widget kPlaceholder=SizedBox(
+  child: Shimmer.fromColors(
+      baseColor: Colors.white10,
+      highlightColor: kSecondaryColor,
+      child: Container(
+        height: 40,
+        decoration:  BoxDecoration(
+            color: CupertinoColors.white,
+            borderRadius: BorderRadius.circular(10)
+        ),
+      )),
+);

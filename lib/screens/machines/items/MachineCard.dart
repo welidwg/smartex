@@ -8,8 +8,14 @@ import 'package:smartex/screens/machines/items/machinItems/MachineDetails.dart';
 
 class MachineCard extends StatefulWidget {
   final String type;
+  late Map<String, dynamic> item = {};
+  late Function updateView;
 
-  const MachineCard({super.key, required this.type});
+  MachineCard(
+      {super.key,
+      required this.type,
+      required this.item,
+      required this.updateView});
 
   @override
   State<MachineCard> createState() => _MachineCardState();
@@ -28,8 +34,12 @@ class _MachineCardState extends State<MachineCard> {
               context: context,
               builder: ((context) {
                 return ModalContent(
-                    content:
-                        widget.type == "re" ? const RefDetails() : const MachineDetails());
+                    content: widget.type == "re"
+                        ? RefDetails(
+                            ref: widget.item,
+                            updateView: widget.updateView,
+                          )
+                        : const MachineDetails());
               }),
               isScrollControlled: true);
         },
@@ -45,7 +55,9 @@ class _MachineCardState extends State<MachineCard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    widget.type == "ma" ? "Code/Chaîne":"Référence",
+                    widget.type == "re"
+                        ? widget.item["ref"]
+                        : "#${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
                     style: kContentTextStyle(customFontSize: kMobileFont)
                         .copyWith(fontWeight: FontWeight.bold),
                   ),

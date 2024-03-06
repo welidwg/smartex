@@ -22,11 +22,11 @@ class AddUserForm extends StatefulWidget {
 }
 
 class _AddUserFormState extends State<AddUserForm> {
-  int? selectedValue = 0;
+  int selectedValue = 0;
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   UsersRequestManager manager = UsersRequestManager();
-  late Map<int, dynamic> roles = {};
+  late Map<int, dynamic> roles = {0:'Administrateur',1:'Technicien'};
   late List<dynamic> users = [];
   final formKey = GlobalKey<FormState>();
   bool isLoading=false;
@@ -34,8 +34,8 @@ class _AddUserFormState extends State<AddUserForm> {
   @override
   void initState() {
     super.initState();
-    roles[0] = "Administrateur";
-    roles[1] = "Technicien";
+    // roles[0] = "Administrateur";
+    // roles[1] = "Technicien";
   }
 
   _setRole(int value) {
@@ -102,7 +102,7 @@ class _AddUserFormState extends State<AddUserForm> {
                       ),
                     ),
                     CustomDropdown(
-                        items: roles, defaultItem: roles[0], setter: _setRole),
+                        items: roles, defaultItem: 0, setter: _setRole),
                     const SizedBox(
                       height: 8,
                     ),

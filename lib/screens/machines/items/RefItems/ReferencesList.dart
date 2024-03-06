@@ -1,20 +1,50 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/Api/references/ReferencesRequestManager.dart';
+import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 import 'package:smartex/screens/machines/items/RefItems/AllRefs.dart';
+import 'package:smartex/screens/machines/items/forms/AddRefForm.dart';
 
-class ReferencesList extends StatelessWidget {
+class ReferencesList extends StatefulWidget {
   const ReferencesList({super.key});
+
+  @override
+  State<ReferencesList> createState() => _ReferencesListState();
+}
+
+class _ReferencesListState extends State<ReferencesList> {
+  late List<dynamic> references = [];
+  ReferencesRequestManager manager = ReferencesRequestManager();
+  String search = '';
+  bool isLoading = true;
+
+  initRefs() async {
+    references = await manager.getRefsList(search: search);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initRefs();
+  }
 
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        const CustomSpacer(),
         Container(
           margin: const EdgeInsets.only(left: 9),
           child: Row(
@@ -22,17 +52,44 @@ class ReferencesList extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(
-                    Icons.text_snippet,
-                    color: kPrimaryColor,
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.text_snippet,
+                        color: kPrimaryColor,
+                      ),
+                      Text(
+                        "Réferences",
+                        style: kTitleTextStyle(
+                            customFontSize: width > kMobileWidth
+                                ? kTabletFont - 2
+                                : kMobileFont + 1),
+                      )
+                    ],
                   ),
-                  Text(
-                    "Réferences",
-                    style: kTitleTextStyle(
-                        customFontSize: width > kMobileWidth
-                            ? kTabletFont - 2
-                            : kMobileFont + 1),
-                  )
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: FloatingActionButton(
+                      elevation: 1,
+                      mini: true,
+                      onPressed: () {
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: ((context) {
+                              return ModalContent(
+                                  content: AddRefForm(updateView: initRefs));
+                            }),
+                            isScrollControlled: true);
+                      },
+                      backgroundColor: kPrimaryColor,
+                      child: const Icon(Icons.add),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(
@@ -42,14 +99,19 @@ class ReferencesList extends StatelessWidget {
                     hPadding: 7,
                     label: "Références",
                     is_Password: false,
-                    onChange: (value) {}),
+                    onChange: (value) {
+                      setState(() {
+                        search = value;
+                      });
+                      initRefs();
+                    }),
               ),
             ],
           ),
         ),
         const CustomSpacer(),
         Container(
-          height: 80,
+          height: 100,
           width: width,
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
@@ -64,32 +126,32 @@ class ReferencesList extends StatelessWidget {
               ),
             ],
           ),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            //padding: EdgeInsets.only(bottom: 16),
-            children: const [
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-              MachineCard(
-                type: "re",
-              ),
-            ],
-          ),
+          child: isLoading
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LoadingComponent(),
+                  ],
+                )
+              : references.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text("Aucune référence trouvée"),
+                      ],
+                    )
+                  : ListView(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      //padding: EdgeInsets.only(bottom: 16),
+                      children: references.map((e) {
+                        return MachineCard(
+                          type: "re",
+                          item: e,
+                          updateView: initRefs,
+                        );
+                      }).toList()),
         ),
         const SizedBox(
           height: 8,
@@ -104,8 +166,11 @@ class ReferencesList extends StatelessWidget {
                       isScrollControlled: true,
                       context: context,
                       builder: (context) {
-                        return const ModalContent(
-                            content: AllReferenceScreen());
+                        return ModalContent(
+                            content: AllReferenceScreen(
+                          refs: references,
+                          updateView: initRefs,
+                        ));
                       });
                 },
                 child: const Text(

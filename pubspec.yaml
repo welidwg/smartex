@@ -47,6 +47,7 @@ dependencies:
   http: ^0.13.4
   dropdown_search: ^3.0.1
   alert: ^2.0.1
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
