@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/Api/machines/MachinesRequestManager.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Title.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/ai/CameraScreen.dart';
@@ -16,12 +18,24 @@ class AllMachineScreen extends StatefulWidget {
 
 class _AllMachineScreenState extends State<AllMachineScreen> {
   late TextEditingController codeCtrl;
+  late List<dynamic> machines = [];
+  MachinesRequestManager manager = MachinesRequestManager();
+  String search = '';
+  bool isLoading = true;
+
+  initMachines() async {
+    machines = await manager.getMachinesList(search: search);
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     codeCtrl = TextEditingController(text: "");
+    initMachines();
   }
 
   Future<void> _openCameraScreen(BuildContext context) async {
@@ -35,9 +49,13 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
   }
 
   void _setCode(String value) {
+    String noSpace=value.replaceAll(RegExp(r'\s+'), '');
+
     setState(() {
-      codeCtrl = TextEditingController(text: value);
+      codeCtrl = TextEditingController(text: noSpace);
+      search=noSpace;
     });
+    initMachines();
   }
 
   @override
@@ -50,7 +68,7 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
           children: [
             const TitleComponent(
                 title: "Tous les machines", icon: CupertinoIcons.gear_solid),
-            CustomSpacer(),
+            const CustomSpacer(),
             Input(
                 controller: codeCtrl,
                 vPadding: 0,
@@ -66,8 +84,14 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
                 ),
                 label: "Code",
                 is_Password: false,
-                onChange: (value) {}),
-            CustomSpacer(),
+                onChange: (value) {
+                  setState(() {
+                    search = value;
+                    isLoading = true;
+                  });
+                  initMachines();
+                }),
+            const CustomSpacer(),
             Container(
               height: 300,
               width: width,
@@ -84,20 +108,28 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
                   ),
                 ],
               ),
-              child: ListView(
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                //padding: EdgeInsets.only(bottom: 16),
-                children:  [
-                  MachineCard(
-                    type: "ma",
-                    item: {},
-                    updateView: (){},
-                  ),
-
-                ],
-              ),
+              child: isLoading
+                  ? ListPlaceholder()
+                  : machines.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Aucune machine trouvée"),
+                          ],
+                        )
+                      : ListView(
+                          physics: const BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          //padding: EdgeInsets.only(bottom: 16),
+                          children: machines.map((e) {
+                            return MachineCard(
+                              type: "ma",
+                              item: e,
+                              updateView: initMachines,
+                            );
+                          }).toList()),
             )
           ],
         )

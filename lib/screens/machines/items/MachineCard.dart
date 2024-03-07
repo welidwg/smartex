@@ -39,7 +39,7 @@ class _MachineCardState extends State<MachineCard> {
                             ref: widget.item,
                             updateView: widget.updateView,
                           )
-                        : const MachineDetails());
+                        :  MachineDetails(updateView:widget.updateView,machine: widget.item,));
               }),
               isScrollControlled: true);
         },

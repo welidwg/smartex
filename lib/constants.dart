@@ -45,7 +45,8 @@ TextStyle kContentTextStyle({double customFontSize=10})=>TextStyle(
     fontSize:customFontSize,
     color: kPrimaryColor,
 );
-String kUrlLaravel="http://192.168.1.16:8000/api";
+String kUrlLaravel="http://192.168.137.1:8000/api";
+String kUrlFlask="http://192.168.137.1:5000";
 
 Widget kPlaceholder=SizedBox(
   child: Shimmer.fromColors(

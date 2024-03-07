@@ -10,7 +10,8 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/constants.dart';
 
 class CameraScreen extends StatefulWidget {
-   CameraScreen({super.key, this.setter});
+  CameraScreen({super.key, this.setter});
+
   late Function? setter;
 
   static const String id = "camera_screen";
@@ -23,7 +24,7 @@ class _CameraScreenState extends State<CameraScreen> {
   late CameraController controller;
   late List cameras;
   late int selectedCameraIndex;
-  bool isLoading=false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -67,7 +68,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    if (controller == null || !controller.value.isInitialized || isLoading ) {
+    if (controller == null || !controller.value.isInitialized || isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -75,6 +76,8 @@ class _CameraScreenState extends State<CameraScreen> {
       );
     }
     return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
       color: CupertinoColors.black,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -82,32 +85,52 @@ class _CameraScreenState extends State<CameraScreen> {
         children: [
           Expanded(
               child: Stack(
-                alignment: Alignment.bottomCenter,
             children: [
-              Center(child: CameraPreview(controller)),
+
+              SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(child: CameraPreview(controller))),
               Center(
                 child: Container(
-                  width: width - 30, // Largeur du rectangle
-                  height: 100.0, // Hauteur du rectangle
+                  width: width - 30,
+                  height: 100.0,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.red,
-                      width: 2.0,
+                      color: CupertinoColors.activeGreen,
+                      width: 5.0,
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: MyActionButton(
-                  textColor: kPrimaryColor,
-                  label: "",
-                  color: kSecondaryColor,
+              Positioned(
+                bottom: 60,
+                right: 2,
+                left: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: MyActionButton(
+                    textColor: kPrimaryColor,
+                    label: "",
+                    color: kSecondaryColor,
+                    onPressed: () {
+                      _onCapturePressed(context);
+                    },
+                    icon: Icons.camera,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 100.0,
+                right: 16.0,
+                child: FloatingActionButton(
+                  backgroundColor: kSecondaryColor,
+                  elevation: 3,
                   onPressed: () {
-                    _onCapturePressed(context);
+                    Navigator.pop(context);
                   },
-                  icon: Icons.camera,
+                  child: const Icon(Icons.close,color: kPrimaryColor,),
                 ),
               ),
             ],
@@ -126,11 +149,11 @@ class _CameraScreenState extends State<CameraScreen> {
   void _onCapturePressed(BuildContext context) async {
     try {
       setState(() {
-        isLoading=true;
+        isLoading = true;
       });
       XFile file = await controller.takePicture();
       String base64Image = base64Encode(File(file.path).readAsBytesSync());
-      const url = 'http://192.168.1.16:5000/process_image';
+      final url = '$kUrlFlask/process_image';
       Uint8List bytes = base64.decode(base64Image);
       var request = http.MultipartRequest('POST', Uri.parse(url));
       request.files.add(
@@ -144,13 +167,11 @@ class _CameraScreenState extends State<CameraScreen> {
         var response = await request.send();
         if (response.statusCode == 200) {
           var body = await response.stream.bytesToString();
-          Map<String,dynamic> jsonResponse=json.decode(body);
+          Map<String, dynamic> jsonResponse = json.decode(body);
 
           print(body);
           widget.setter!(jsonResponse["text"][0]);
-          setState(() {
-
-          });
+          setState(() {});
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(body)));
           Navigator.pop(context);

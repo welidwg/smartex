@@ -4,6 +4,7 @@ import 'package:smartex/Api/references/ReferencesRequestManager.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
+import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Title.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/ai/CameraScreen.dart';
@@ -13,7 +14,7 @@ class AllReferenceScreen extends StatefulWidget {
   late List<dynamic> refs;
   late Function updateView;
 
-  AllReferenceScreen({super.key, required refs,required this.updateView});
+  AllReferenceScreen({super.key, required refs, required this.updateView});
 
   @override
   State<AllReferenceScreen> createState() => _AllReferenceScreenState();
@@ -65,8 +66,8 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
             is_Password: false,
             onChange: (value) {
               setState(() {
-                search=value;
-                isLoading=true;
+                search = value;
+                isLoading = true;
               });
               initRefs();
             }),
@@ -88,14 +89,15 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
             ],
           ),
           child: isLoading
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LoadingComponent(),
-                  ],
-                )
+              ? const ListPlaceholder()
               : references.isEmpty
-                  ? const Text("Aucune référence ajoutée")
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text("Aucune référence trouvée"),
+                      ],
+                    )
                   : ListView(
                       physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,

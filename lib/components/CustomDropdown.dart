@@ -58,7 +58,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             setState(() {
               selectedItem = newVal;
             });
-            widget.setter!(int.parse(newVal));
+            widget.setter!(newVal);
           }),
     );
   }

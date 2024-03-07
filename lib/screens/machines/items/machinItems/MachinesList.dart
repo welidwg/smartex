@@ -84,8 +84,10 @@ class _MachinesListState extends State<MachinesList> {
                             backgroundColor: Colors.transparent,
                             context: context,
                             builder: ((context) {
-                              return const ModalContent(
-                                  content: AddMachineForm());
+                              return ModalContent(
+                                  content: AddMachineForm(
+                                updateView: initMachines,
+                              ));
                             }),
                             isScrollControlled: true);
                       },
@@ -109,17 +111,15 @@ class _MachinesListState extends State<MachinesList> {
                       onTap: () {
                         _openCameraScreen(context);
                       },
-
                     ),
                     label: "Code",
                     is_Password: false,
                     onChange: (value) {
                       setState(() {
-                        search=value;
-                        isLoading=true;
+                        search = value;
+                        isLoading = true;
                       });
                       initMachines();
-
                     }),
               ),
             ],
@@ -196,9 +196,12 @@ class _MachinesListState extends State<MachinesList> {
   }
 
   void _setCode(String value) {
+    String noSpace = value.replaceAll(RegExp(r'\s+'), '');
     setState(() {
-      codeCtrl = TextEditingController(text: value);
+      codeCtrl = TextEditingController(text: noSpace);
+      search = noSpace;
     });
+    initMachines();
   }
 
   Future<void> _openCameraScreen(BuildContext context) async {

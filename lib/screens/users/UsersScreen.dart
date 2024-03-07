@@ -10,6 +10,7 @@ import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/BlurredModal.dart';
+import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Titles/HeadLine.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/users/Items/AddUserForm.dart';
@@ -135,26 +136,28 @@ class _UsersScreenState extends State<UsersScreen> {
                 ),
               ],
             ),
-            child: users.isEmpty
-                ? SizedBox(
-                    width: width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const[
-                         Center(child: Text("Aucun utilisateur trouvé")),
-                      ],
-                    ))
-                : ListView(
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(bottom: 16),
-                    children: users.map((e) {
-                      return UserCard(
-                        user: e,
-                        updateView: initUsers,
-                      );
-                    }).toList()),
+            child: isLoading
+                ? ListPlaceholder()
+                : users.isEmpty
+                    ? SizedBox(
+                        width: width,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Center(child: Text("Aucun utilisateur trouvé")),
+                          ],
+                        ))
+                    : ListView(
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(bottom: 16),
+                        children: users.map((e) {
+                          return UserCard(
+                            user: e,
+                            updateView: initUsers,
+                          );
+                        }).toList()),
           ))
         ],
       ),

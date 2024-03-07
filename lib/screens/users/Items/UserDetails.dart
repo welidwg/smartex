@@ -39,6 +39,7 @@ class _UserDetailsState extends State<UserDetails> {
     setState(() {
       selectedRole = value;
     });
+    print(selectedRole);
   }
   @override
   Widget build(BuildContext context) {
