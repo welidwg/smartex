@@ -16,19 +16,17 @@ class LoginSreen extends StatefulWidget {
 }
 
 class _LoginSreenState extends State<LoginSreen> {
-
   @override
   Widget build(BuildContext context) {
-    return const  SafeArea(
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        backgroundColor: CupertinoColors.white,
-        body: Center(
-          child:   ResponsiveLayout(desktopBody: TabletLogin(), mobileBody: SingleChildScrollView(child: MobileLogin()),),
-        )
-      ),
+          resizeToAvoidBottomInset: true,
+          backgroundColor: CupertinoColors.white,
+          body: width > kMobileWidth
+              ? const TabletLogin()
+              :  const SingleChildScrollView(child: MobileLogin())),
     );
   }
 }
-
-

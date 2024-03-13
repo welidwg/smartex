@@ -6,7 +6,9 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/machines/items/RefItems/LinkedMachines.dart';
 
 class RefDetails extends StatefulWidget {
   late Map<String, dynamic> ref;
@@ -33,6 +35,7 @@ class _RefDetailsState extends State<RefDetails> {
 
   @override
   Widget build(BuildContext context) {
+    ModalManager modalManager = ModalManager();
     final double width = MediaQuery.of(context).size.width;
     return Column(
       children: [
@@ -61,7 +64,6 @@ class _RefDetailsState extends State<RefDetails> {
           label: "Référence",
           is_Password: false,
           onChange: (value) {},
-          value: "PPFUL2",
         ),
         const SizedBox(
           height: 13,
@@ -69,58 +71,68 @@ class _RefDetailsState extends State<RefDetails> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Icon(
+          children: [
+            const Icon(
               FontAwesomeIcons.solidEye,
               size: 15,
               weight: 10,
               color: kPrimaryColor,
             ),
-            SizedBox(
+            const SizedBox(
               width: 8,
             ),
             Expanded(
-                child: Text(
-              "Voir les machines liées à cette référence",
-              style: TextStyle(color: kPrimaryColor),
+                child: GestureDetector(
+              onTap: () {
+                print(widget.ref["machines"].length);
+                modalManager.showModal(
+                    content: LinkedMachines(ref: widget.ref), context: context);
+              },
+              child: const Text(
+                "Voir les machines liées à cette référence",
+                style: TextStyle(color: kPrimaryColor),
+              ),
             ))
           ],
         ),
         const CustomSpacer(),
-        isLoading ? Center(child: LoadingComponent(),) :
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-                child: MyActionButton(
-              label: "",
-              color: kPrimaryColor,
-              icon: Icons.save_as,
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                await _saveRefData(context);
-              },
-              isLoading: isLoading,
-            )),
-            const SizedBox(
-              width: 10,
-            ),
-            MyActionButton(
-              label: "",
-              color: Colors.pink,
-              icon: Icons.delete_sweep,
-              isLoading: isLoading,
-              onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
-                await _deleteRef(context);
-              },
-            )
-          ],
-        )
+        isLoading
+            ? Center(
+                child: LoadingComponent(),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: MyActionButton(
+                    label: "",
+                    color: kPrimaryColor,
+                    icon: Icons.save_as,
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _saveRefData(context);
+                    },
+                    isLoading: isLoading,
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  MyActionButton(
+                    label: "",
+                    color: Colors.pink,
+                    icon: Icons.delete_sweep,
+                    isLoading: isLoading,
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _deleteRef(context);
+                    },
+                  )
+                ],
+              )
       ],
     );
     ;

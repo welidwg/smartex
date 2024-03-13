@@ -36,7 +36,7 @@ class _MachineDetailsState extends State<MachineDetails> {
   late int defaultChaine;
   late int defaultEtat;
   late int defaultRef;
-  late int defaultParc = 0;
+  late int defaultParc;
   ChainesRequestManager chaineManager = ChainesRequestManager();
   EtatRequestManager etatManager = EtatRequestManager();
   ReferencesRequestManager refManager = ReferencesRequestManager();
@@ -50,7 +50,7 @@ class _MachineDetailsState extends State<MachineDetails> {
       defaultChaine = widget.machine["id_chaine"];
       defaultEtat = widget.machine["id_etat"];
       defaultRef = widget.machine["id_reference"];
-      defaultParc = 0;
+      defaultParc = widget.machine["parc"];
       isLoading = false;
       isLoadingForm = false;
     });

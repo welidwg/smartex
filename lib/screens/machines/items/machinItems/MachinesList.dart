@@ -7,7 +7,7 @@ import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/constants.dart';
-import 'package:smartex/screens/ai/CameraScreen.dart';
+import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 import 'package:smartex/screens/machines/items/forms/AddMachineForm.dart';
 import 'package:smartex/screens/machines/items/machinItems/AllMachines.dart';

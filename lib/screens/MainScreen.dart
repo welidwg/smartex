@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/Api/users/UsersRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/TopBar.dart';
 import 'package:smartex/constants.dart';
@@ -18,7 +19,15 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  bool updateView = false;
   Widget currentPage = const HomeScreen();
+  UsersRequestManager manager = UsersRequestManager();
+
+  void refreshView() {
+    setState(() {
+      updateView = !updateView;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,26 +36,26 @@ class _MainScreenState extends State<MainScreen> {
 
     return SafeArea(
         child: WillPopScope(
-          onWillPop: ()async{
-            Navigator.pushReplacementNamed(context, LoginSreen.id);
-            return true;
-          },
-          child: Scaffold(
-      drawer: Drawer(
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, LoginSreen.id);
+        return true;
+      },
+      child: Scaffold(
+        drawer: Drawer(
             width: width > kMobileWidth ? width / 3 - 100 : width,
             child: Container(
               height: height,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
+                  SizedBox(
                     height: 200,
                     child: DrawerHeader(
-                        decoration: BoxDecoration(color: kPrimaryColor),
-                        child: Column(
+                        decoration: const BoxDecoration(color: kPrimaryColor),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            kLogoXS(cWidth: width > kMobileWidth ? 160 : 150)
+                            kLogoSecondaryXS(
+                                cWidth: width > kMobileWidth ? 160 : 250)
                           ],
                         )),
                   ),
@@ -58,23 +67,24 @@ class _MainScreenState extends State<MainScreen> {
                         Column(
                           children: [
                             Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10,vertical: 6),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                   color: CupertinoColors.white,
                                   borderRadius: BorderRadius.circular(10),
-                                  boxShadow:  [
+                                  boxShadow: [
                                     BoxShadow(
                                         color: Colors.black.withOpacity(0.1),
                                         blurRadius: 2,
                                         blurStyle: BlurStyle.normal,
-                                        offset: Offset(0, 1),
+                                        offset: const Offset(0, 1),
                                         spreadRadius: 0.4)
                                   ]),
                               child: ListTile(
                                 leading: const Icon(Icons.house),
                                 title: Text('Accueil',
                                     style: currentPage.toString() ==
-                                            HomeScreen().toString()
+                                            const HomeScreen().toString()
                                         ? kActive
                                         : kInActive),
                                 onTap: () {
@@ -86,11 +96,12 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10,vertical: 6),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                   color: CupertinoColors.white,
                                   borderRadius: BorderRadius.circular(10),
-                                  boxShadow:  [
+                                  boxShadow: [
                                     BoxShadow(
                                         color: Colors.black.withOpacity(0.1),
                                         blurRadius: 2,
@@ -112,19 +123,20 @@ class _MainScreenState extends State<MainScreen> {
                                   setState(() {
                                     currentPage = UsersScreen(
                                       width: width,
+                                      updateView: refreshView,
                                     );
                                     Navigator.pop(context);
                                   });
                                 },
                               ),
                             ),
-
                             Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10,vertical: 6),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
                                   color: CupertinoColors.white,
                                   borderRadius: BorderRadius.circular(10),
-                                  boxShadow:  [
+                                  boxShadow: [
                                     BoxShadow(
                                         color: Colors.black.withOpacity(0.1),
                                         blurRadius: 2,
@@ -149,7 +161,6 @@ class _MainScreenState extends State<MainScreen> {
                                 },
                               ),
                             ),
-
                           ],
                         ),
                         Padding(
@@ -158,7 +169,8 @@ class _MainScreenState extends State<MainScreen> {
                             label: "Déconnexion",
                             color: kPrimaryColor,
                             icon: Icons.logout,
-                            onPressed: () {
+                            onPressed: () async {
+                              await manager.logoutUser();
                               Navigator.of(context)
                                   .pushReplacementNamed(LoginSreen.id);
                             },
@@ -170,9 +182,9 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             )),
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      body: Padding(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.white,
+        body: Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,8 +202,8 @@ class _MainScreenState extends State<MainScreen> {
               )
             ],
           ),
+        ),
       ),
-    ),
-        ));
+    ));
   }
 }

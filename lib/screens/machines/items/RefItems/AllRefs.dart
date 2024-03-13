@@ -7,7 +7,7 @@ import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Title.dart';
 import 'package:smartex/constants.dart';
-import 'package:smartex/screens/ai/CameraScreen.dart';
+import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 
 class AllReferenceScreen extends StatefulWidget {

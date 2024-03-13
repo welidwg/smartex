@@ -54,12 +54,19 @@ class _MachineCardState extends State<MachineCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    widget.type == "re"
-                        ? widget.item["ref"]
-                        : "#${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
-                    style: kContentTextStyle(customFontSize: kMobileFont)
-                        .copyWith(fontWeight: FontWeight.bold),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.type == "re"
+                            ? widget.item["ref"]
+                            : "${widget.item["reference"]["ref"]}#${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
+                        style: kContentTextStyle(customFontSize: kMobileFont)
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      widget.type=="ma" ? Text("${widget.item["etat"]["libelle"]}") : Container()
+                    ],
                   ),
                 ],
               ),

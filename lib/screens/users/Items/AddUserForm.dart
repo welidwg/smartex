@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smartex/Api/ApiManager.dart';
+import 'package:smartex/Api/roles/RolesRequestManager.dart';
 import 'package:smartex/Api/users/UsersRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomDropdown.dart';
@@ -26,16 +27,25 @@ class _AddUserFormState extends State<AddUserForm> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   UsersRequestManager manager = UsersRequestManager();
-  late Map<int, dynamic> roles = {0:'Administrateur',1:'Technicien'};
+  late List<dynamic> roles;
   late List<dynamic> users = [];
   final formKey = GlobalKey<FormState>();
-  bool isLoading=false;
+  bool isLoading = true;
+
+  initRoles() async {
+    roles = await RolesRequestManager.getRolesList(search: "");
+    if (!roles.isEmpty) {
+      setState(() {
+        selectedValue = roles[0]["id"];
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    // roles[0] = "Administrateur";
-    // roles[1] = "Technicien";
+    initRoles();
   }
 
   _setRole(int value) {
@@ -101,19 +111,58 @@ class _AddUserFormState extends State<AddUserForm> {
                             TextStyle(fontSize: width > kMobileWidth ? 18 : 13),
                       ),
                     ),
-                    CustomDropdown(
-                        items: roles, defaultItem: 0, setter: _setRole),
+                    isLoading
+                        ? kPlaceholder
+                        : Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 19),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: kPrimaryColor, width: 2),
+                                borderRadius: BorderRadius.circular(7)),
+                            child: DropdownButton(
+                                elevation: 0,
+                                dropdownColor: kSecondaryColor,
+                                style: const TextStyle(
+                                    color: kPrimaryColor, fontFamily: "Font1"),
+                                borderRadius: BorderRadius.circular(10),
+                                isExpanded: true,
+                                value: selectedValue,
+                                onTap: () {
+                                  setState(() {});
+                                },
+                                icon: const Icon(Icons.arrow_drop_down),
+                                items: roles.map((value) {
+                                  return DropdownMenuItem(
+                                    value: value["id"],
+                                    child: Text(
+                                      value["role"],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              width > kMobileWidth ? 18 : 13,
+                                          fontFamily: "Font1"),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (dynamic newVal) {
+                                  setState(() {
+                                    selectedValue = newVal;
+                                  });
+                                  // widget.setter!(int.parse(newVal));
+                                }),
+                          ),
                     const SizedBox(
                       height: 8,
                     ),
                     MyActionButton(
                       label: "Ajouter",
+                      icon: Icons.add,
                       isLoading: isLoading,
                       color: kPrimaryColor,
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           setState(() {
-                            isLoading=true;
+                            isLoading = true;
                           });
                           Map<String, dynamic> donnees = {
                             'username': username.text,
@@ -130,7 +179,7 @@ class _AddUserFormState extends State<AddUserForm> {
                             ScaffoldMessenger.of(widget.context!).showSnackBar(
                                 SnackBar(content: Text(res['message'])));
                             setState(() {
-                              isLoading=false;
+                              isLoading = false;
                             });
                           } else {
                             print(res['message']);

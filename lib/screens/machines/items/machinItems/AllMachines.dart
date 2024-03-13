@@ -6,7 +6,7 @@ import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Title.dart';
 import 'package:smartex/constants.dart';
-import 'package:smartex/screens/ai/CameraScreen.dart';
+import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 
 class AllMachineScreen extends StatefulWidget {
@@ -64,74 +64,70 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
 
     return Column(
       children: [
-        Column(
-          children: [
-            const TitleComponent(
-                title: "Tous les machines", icon: CupertinoIcons.gear_solid),
-            const CustomSpacer(),
-            Input(
-                controller: codeCtrl,
-                vPadding: 0,
-                hPadding: 7,
-                suffixIc: GestureDetector(
-                  child: const Icon(
-                    Icons.qr_code_scanner_sharp,
-                    size: 20,
-                  ),
-                  onTap: () {
-                    _openCameraScreen(context);
-                  },
-                ),
-                label: "Code",
-                is_Password: false,
-                onChange: (value) {
-                  setState(() {
-                    search = value;
-                    isLoading = true;
-                  });
-                  initMachines();
-                }),
-            const CustomSpacer(),
-            Container(
-              height: 300,
-              width: width,
-              margin: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: CupertinoColors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: kSecondaryColor,
-                    spreadRadius: 2,
-                    blurRadius: 2,
-                    offset: Offset(1, 1),
-                  ),
-                ],
+        const TitleComponent(
+            title: "Tous les machines", icon: CupertinoIcons.gear_solid),
+        const CustomSpacer(),
+        Input(
+            controller: codeCtrl,
+            vPadding: 0,
+            hPadding: 7,
+            suffixIc: GestureDetector(
+              child: const Icon(
+                Icons.qr_code_scanner_sharp,
+                size: 20,
               ),
-              child: isLoading
-                  ? ListPlaceholder()
-                  : machines.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Aucune machine trouvée"),
-                          ],
-                        )
-                      : ListView(
-                          physics: const BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          //padding: EdgeInsets.only(bottom: 16),
-                          children: machines.map((e) {
-                            return MachineCard(
-                              type: "ma",
-                              item: e,
-                              updateView: initMachines,
-                            );
-                          }).toList()),
-            )
-          ],
+              onTap: () {
+                _openCameraScreen(context);
+              },
+            ),
+            label: "Code",
+            is_Password: false,
+            onChange: (value) {
+              setState(() {
+                search = value;
+                isLoading = true;
+              });
+              initMachines();
+            }),
+        const CustomSpacer(),
+        Container(
+          height: 300,
+          width: width,
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: CupertinoColors.white,
+            boxShadow: const [
+              BoxShadow(
+                color: kSecondaryColor,
+                spreadRadius: 2,
+                blurRadius: 2,
+                offset: Offset(1, 1),
+              ),
+            ],
+          ),
+          child: isLoading
+              ? ListPlaceholder()
+              : machines.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("Aucune machine trouvée"),
+                      ],
+                    )
+                  : ListView(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      //padding: EdgeInsets.only(bottom: 16),
+                      children: machines.map((e) {
+                        return MachineCard(
+                          type: "ma",
+                          item: e,
+                          updateView: initMachines,
+                        );
+                      }).toList()),
         )
       ],
     );

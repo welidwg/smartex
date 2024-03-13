@@ -18,8 +18,9 @@ import 'package:smartex/screens/users/Items/UserCard.dart';
 
 class UsersScreen extends StatefulWidget {
   double? width;
+  late Function? updateView;
 
-  UsersScreen({super.key, this.width});
+  UsersScreen({super.key, this.width,  this.updateView});
 
   static const String id = "users_screen";
 

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/storage/LocalStorage.dart';
 
 class TopBar extends StatefulWidget {
   const TopBar({super.key});
@@ -10,14 +12,27 @@ class TopBar extends StatefulWidget {
 }
 
 class _TopBarState extends State<TopBar> {
+  late Map<String, dynamic> user = {};
+
+  initUser() async {
+    user = await LocalStorage.getUser();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      //margin: EdgeInsets.all(10),
       margin: const EdgeInsets.symmetric(vertical: 10),
-      decoration:  BoxDecoration(
-        color: kSecondaryColor.withOpacity(0.4),
-          borderRadius: BorderRadius.all(Radius.circular(20))),
+      decoration: BoxDecoration(
+          color: kSecondaryColor.withOpacity(0.4),
+          borderRadius: const BorderRadius.all(Radius.circular(20))),
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
@@ -46,13 +61,15 @@ class _TopBarState extends State<TopBar> {
                 ),
                 Container(
                   margin: EdgeInsets.only(right: 20),
-                  child: Text(
-                    "Username",
-                    style: TextStyle(
-                        fontSize: kMobileFont,
-                        color: kPrimaryColor,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  child: user.isEmpty
+                      ? LoadingComponent()
+                      : Text(
+                          user["username"],
+                          style: TextStyle(
+                              fontSize: kMobileFont,
+                              color: kPrimaryColor,
+                              fontWeight: FontWeight.bold),
+                        ),
                 )
               ],
             )

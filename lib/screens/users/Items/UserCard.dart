@@ -65,9 +65,7 @@ class _UserCardState extends State<UserCard> {
                         height: 3,
                       ),
                       Text(
-                        widget.user["role"] == 0
-                            ? "Administrateur"
-                            : "Technicien",
+                        widget.user["role"]["role"],
                         style: kContentTextStyle(customFontSize: 14).copyWith(
                             fontWeight: FontWeight.normal, color: Colors.black),
                       )

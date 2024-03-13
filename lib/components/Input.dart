@@ -108,10 +108,10 @@ class _InputState extends State<Input> {
           borderRadius: BorderRadius.all(Radius.circular(7.0)),
         ),
         errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.red, width: 2.0),
+          borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(7.0)),
         ),
-        errorStyle: TextStyle(fontFamily: 'Font1',color: Colors.red)
+        errorStyle: const TextStyle(fontFamily: 'Font1',color: Colors.red,fontWeight: FontWeight.bold)
       ),
     );
   }

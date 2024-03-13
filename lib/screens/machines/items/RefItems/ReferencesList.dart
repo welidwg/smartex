@@ -80,6 +80,7 @@ class _ReferencesListState extends State<ReferencesList> {
                         showModalBottomSheet(
                             backgroundColor: Colors.transparent,
                             context: context,
+                            isDismissible: false,
                             builder: ((context) {
                               return ModalContent(
                                   content: AddRefForm(updateView: initRefs));

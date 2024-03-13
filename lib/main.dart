@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartex/screens/MainScreen.dart';
-import 'package:smartex/screens/ai/CameraScreen.dart';
+import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/home/HomeScreen.dart';
 import 'package:smartex/screens/login/LoginScreen.dart';
 import 'package:smartex/screens/SplashScreen.dart';

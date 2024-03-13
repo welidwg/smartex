@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/Cards/Card.dart';
+import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/TopBar.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/responsive/responsive_layout.dart';
 import 'package:smartex/screens/home/MobileHome.dart';
 import 'package:smartex/screens/home/TabletHome.dart';
+import 'package:smartex/storage/LocalStorage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,17 +25,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Timer timer;
   DateTime today = DateTime.now();
-
+  late Map<String, dynamic> user = {};
   Future<DateTime> _getCurrentTime() async {
     return DateTime.now();
   }
-
+  initUser() async {
+    user = await LocalStorage.getUser();
+    setState(() {});
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     today = DateTime.now();
     _setDate();
+    initUser();
   }
 _setDate(){
   timer=Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -74,8 +80,9 @@ _setDate(){
                               const SizedBox(
                                 width: 5,
                               ),
+                              user.isEmpty? LoadingComponent():
                               Text(
-                                "Username | Admin",
+                                "${user["username"]} | ${user["role"]["role"]}",
                                 style: kContentTextStyle(
                                     customFontSize:
                                         width > kMobileWidth ? kTabletFont : kMobileFont).copyWith(fontWeight: FontWeight.bold),
