@@ -5,7 +5,7 @@ import 'package:smartex/components/Modals/ModalContent.dart';
 
 class ModalManager {
 
-  Future showModal({required Widget content, required BuildContext context}) {
+  static Future showModal({required Widget content, required BuildContext context}) {
     return showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,

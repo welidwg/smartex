@@ -10,6 +10,7 @@ import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/Placeholders/FormPlaceholder.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/machinItems/History.dart';
@@ -37,6 +38,7 @@ class _MachineDetailsState extends State<MachineDetails> {
   late int defaultEtat;
   late int defaultRef;
   late int defaultParc;
+
   ChainesRequestManager chaineManager = ChainesRequestManager();
   EtatRequestManager etatManager = EtatRequestManager();
   ReferencesRequestManager refManager = ReferencesRequestManager();
@@ -91,7 +93,7 @@ class _MachineDetailsState extends State<MachineDetails> {
                     style: kTitleTextStyle(
                         customFontSize: width > kMobileWidth
                             ? kTabletFont - 2
-                            : kMobileFont+2),
+                            : kMobileFont + 2),
                   )
                 ],
               ),
@@ -362,14 +364,12 @@ class _MachineDetailsState extends State<MachineDetails> {
                           icon: Icons.manage_history,
                           onPressed: () {
                             //Navigator.pop(context);
-                            showModalBottomSheet(
-                                isScrollControlled: true,
-                                enableDrag: true,
+                            ModalManager.showModal(
                                 context: context,
-                                builder: (context) {
-                                  return const ModalContent(
-                                      content: HistoryMachine());
-                                });
+                                content: HistoryMachine(
+                                  updateView: widget.updateView,
+                                  machine: widget.machine,
+                                ));
                           },
                         )),
                         const SizedBox(

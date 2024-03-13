@@ -9,6 +9,7 @@ class ApiManager {
   late String url;
   late String csrf = '';
   final storage = const FlutterSecureStorage();
+  final int timeout = 5;
 
   ApiManager({required this.url});
 
@@ -34,37 +35,49 @@ class ApiManager {
 
   Future<Map<String, dynamic>> sendRequest(
       String method, String endpoint, Map<String, dynamic> data) async {
-    var token = await LocalStorage.getToken();
-    var link = Uri.parse('$url/$endpoint');
-    var jsonData = jsonEncode(data);
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': token == null ? "" : "Bearer ${token.toString()}"
-    };
-    late http.Response response;
-    switch (method.toLowerCase()) {
-      case "post":
-        response = await http.post(link, headers: headers, body: jsonData);
-        break;
-      case "get":
-        response = await http.get(
-          link,
-          headers: headers,
-        );
-        break;
-      case "put":
-        response = await http.put(link, headers: headers, body: jsonData);
-        break;
-      case "delete":
-        response = await http.delete(link, headers: headers, body: jsonData);
-        break;
-      default:
-        throw Exception('Méthode HTTP non prise en charge : $method');
-    }
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return jsonDecode(response.body);
-    } else {
-      return jsonDecode(response.body.toString());
+    try {
+      var token = await LocalStorage.getToken();
+      var link = Uri.parse('$url/$endpoint');
+      var jsonData = jsonEncode(data);
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': token == null ? "" : "Bearer ${token.toString()}"
+      };
+      late http.Response response;
+      switch (method.toLowerCase()) {
+        case "post":
+          response = await http
+              .post(link, headers: headers, body: jsonData)
+              .timeout(Duration(seconds: timeout));
+          break;
+        case "get":
+          response = await http
+              .get(
+                link,
+                headers: headers,
+              )
+              .timeout(Duration(seconds: timeout));
+          break;
+        case "put":
+          response = await http
+              .put(link, headers: headers, body: jsonData)
+              .timeout(Duration(seconds: timeout));
+          break;
+        case "delete":
+          response = await http
+              .delete(link, headers: headers, body: jsonData)
+              .timeout(Duration(seconds: timeout));
+          break;
+        default:
+          throw Exception('Méthode HTTP non prise en charge : $method');
+      }
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        return jsonDecode(response.body.toString());
+      }
+    } on Exception catch (e) {
+      return jsonDecode('{"type":"error","message":"Erreur de serveur"}');
     }
   }
 
@@ -77,7 +90,7 @@ class ApiManager {
       var response = await http.get(link, headers: {
         'Content-Type': 'application/json',
         'Authorization': token == null ? "" : "Bearer ${token.toString()}"
-      });
+      }).timeout(Duration(seconds: timeout)) ;
       if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(response.body);
       } else {

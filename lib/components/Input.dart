@@ -13,11 +13,15 @@ class Input extends StatefulWidget {
   late double? vPadding;
   late double? hPadding;
   final Function(String value) onChange;
+  final Function? onTap;
   final String? message;
+  bool? isEnabled = false;
   final TextEditingController? controller;
 
   Input(
       {super.key,
+      this.onTap,
+      this.isEnabled,
       required this.label,
       required this.is_Password,
       required this.onChange,
@@ -27,7 +31,7 @@ class Input extends StatefulWidget {
       this.hPadding,
       this.suffixIc,
       this.message,
-         this.controller,
+      this.controller,
       this.isNumber});
 
   @override
@@ -35,7 +39,6 @@ class Input extends StatefulWidget {
 }
 
 class _InputState extends State<Input> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -52,10 +55,10 @@ class _InputState extends State<Input> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return TextFormField(
-      onTapOutside: (e){
+      onTapOutside: (e) {
         FocusScope.of(context).unfocus();
       },
-
+      enabled: widget.isEnabled,
       cursorColor: kPrimaryColor,
       controller: widget.controller,
       validator: (value) {
@@ -75,44 +78,49 @@ class _InputState extends State<Input> {
         widget.onChange(value);
         setState(() {});
       },
+      onTap: () {
+        widget.onTap != null ? widget.onTap!() : null;
+      },
       keyboardType: widget.isTextArea != null
           ? TextInputType.multiline
           : widget.isNumber == true
               ? TextInputType.number
               : TextInputType.emailAddress,
       decoration: InputDecoration(
-        suffixIcon: widget.suffixIc,
-        suffixIconColor: kPrimaryColor,
-        label: Text(widget.label,
-            style: TextStyle(
-                fontSize: width > kMobileWidth ? 18 : 13,
-                color: kPrimaryColor,
-                fontFamily: "Font1")),
-        alignLabelWithHint: true,
-        floatingLabelAlignment: FloatingLabelAlignment.start,
-        labelStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        hintStyle: const TextStyle(color: kPrimaryColor),
-        contentPadding: EdgeInsets.symmetric(
-            vertical: widget.vPadding == null ? 22.0 : widget.vPadding!,
-            horizontal: widget.hPadding == null ? 20.0 : widget.hPadding!),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(7.0)),
-        ),
-        errorStyle: const TextStyle(fontFamily: 'Font1',color: Colors.red,fontWeight: FontWeight.bold)
-      ),
+          suffixIcon: widget.suffixIc,
+          suffixIconColor: kPrimaryColor,
+          label: Text(widget.label,
+              style: TextStyle(
+                  fontSize: width > kMobileWidth ? 18 : 13,
+                  color: kPrimaryColor,
+                  fontFamily: "Font1")),
+          alignLabelWithHint: true,
+          floatingLabelAlignment: FloatingLabelAlignment.start,
+          labelStyle:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          hintStyle: const TextStyle(color: kPrimaryColor),
+          contentPadding: EdgeInsets.symmetric(
+              vertical: widget.vPadding == null ? 22.0 : widget.vPadding!,
+              horizontal: widget.hPadding == null ? 20.0 : widget.hPadding!),
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: kPrimaryColor, width: 2.0),
+            borderRadius: BorderRadius.all(Radius.circular(7.0)),
+          ),
+          errorStyle: const TextStyle(
+              fontFamily: 'Font1',
+              color: Colors.red,
+              fontWeight: FontWeight.bold)),
     );
   }
 }
