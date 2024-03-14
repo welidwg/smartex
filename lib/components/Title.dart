@@ -30,7 +30,7 @@ class _TitleComponentState extends State<TitleComponent> {
           widget.title,
           style: kTitleTextStyle(
               customFontSize:
-                  width > kMobileWidth ? kTabletFont - 2 : kMobileFont),
+                  width > kMobileWidth ? kTabletFont  : kMobileFont),
         )
       ],
     );

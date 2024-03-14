@@ -6,6 +6,7 @@ import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 import 'package:smartex/screens/machines/items/RefItems/AllRefs.dart';
@@ -62,7 +63,7 @@ class _ReferencesListState extends State<ReferencesList> {
                         "Réferences",
                         style: kTitleTextStyle(
                             customFontSize: width > kMobileWidth
-                                ? kTabletFont - 2
+                                ? kTabletFont
                                 : kMobileFont + 1),
                       )
                     ],
@@ -77,15 +78,9 @@ class _ReferencesListState extends State<ReferencesList> {
                       elevation: 1,
                       mini: true,
                       onPressed: () {
-                        showModalBottomSheet(
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            isDismissible: false,
-                            builder: ((context) {
-                              return ModalContent(
-                                  content: AddRefForm(updateView: initRefs));
-                            }),
-                            isScrollControlled: true);
+                        ModalManager.showModal(
+                            content: AddRefForm(updateView: initRefs),
+                            context: context);
                       },
                       backgroundColor: kPrimaryColor,
                       child: const Icon(Icons.add),
@@ -163,21 +158,20 @@ class _ReferencesListState extends State<ReferencesList> {
             children: [
               GestureDetector(
                 onTap: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return ModalContent(
-                            content: AllReferenceScreen(
-                          refs: references,
-                          updateView: initRefs,
-                        ));
-                      });
+                  ModalManager.showModal(
+                      content: AllReferenceScreen(
+                        refs: references,
+                        updateView: initRefs,
+                      ),
+                      context: context);
                 },
-                child: const Text(
+                child: Text(
                   "Afficher tous",
                   style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.bold),
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize:
+                          width > kMobileWidth ? kTabletFont : kMobileFont),
                 ),
               ),
               Icon(Icons.keyboard_arrow_down)

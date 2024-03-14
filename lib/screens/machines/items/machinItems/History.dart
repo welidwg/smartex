@@ -20,13 +20,13 @@ class HistoryMachine extends StatefulWidget {
 class _HistoryMachineState extends State<HistoryMachine> {
   late Map<String, dynamic> ma;
 
-  initHistory(){
+  initHistory() {
     setState(() {
       ma = widget.machine;
     });
     widget.updateView();
-
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -77,8 +77,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
           onPressed: () {
             ModalManager.showModal(
                 content: AddHistoryForm(
-                    idMachine: widget.machine["id"],
-                    updateView: initHistory),
+                    idMachine: widget.machine["id"], updateView: initHistory),
                 context: context);
           },
         ),

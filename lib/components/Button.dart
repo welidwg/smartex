@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smartex/components/Loading.dart';
+import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
 
 class MyActionButton extends StatefulWidget {
@@ -12,6 +13,7 @@ class MyActionButton extends StatefulWidget {
       required this.color,
       this.textColor,
       this.isLoading = false,
+      this.padding = 13,
       this.icon});
 
   late VoidCallback? onPressed;
@@ -19,6 +21,7 @@ class MyActionButton extends StatefulWidget {
   late Color color;
   late Color? textColor;
   late IconData? icon;
+  late double? padding;
   bool isLoading = false;
 
   @override
@@ -39,14 +42,14 @@ class _MyActionButtonState extends State<MyActionButton> {
           padding: const EdgeInsets.all(0),
           onPressed: widget.onPressed,
           child: Padding(
-            padding: const EdgeInsets.all(13.0),
+            padding: EdgeInsets.all(widget.padding!=null ? widget.padding! : 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(widget.label,
-                    style: const TextStyle(
+                    style:  TextStyle(
                         color: kSecondaryColor,
-                        fontSize: 15,
+                        fontSize: ResponsiveManager.setFont(context)-2,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Font1')),
                 const SizedBox(

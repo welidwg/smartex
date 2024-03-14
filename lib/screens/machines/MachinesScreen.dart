@@ -50,9 +50,9 @@ class _MachinesScreenState extends State<MachinesScreen> {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               HeadLine(
-                title: "Liste des machines",
+                title: "Machines et références",
                 fontS:
-                    width > kMobileWidth ? kTabletFont : kMobileTitleFont - 2,
+                    width > kMobileWidth ? kTabletFont+3 : kMobileTitleFont ,
                 icon: CupertinoIcons.gear_solid,
                 color: kPrimaryColor,
               ),

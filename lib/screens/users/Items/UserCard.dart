@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smartex/components/Cards/Card.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
+import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/users/Items/UserDetails.dart';
 
 class UserCard extends StatefulWidget {
   late Map<String, dynamic> user = {};
-  late  Function? updateView;
+  late Function? updateView;
 
-  UserCard({super.key, required this.user,this.updateView});
+  UserCard({super.key, required this.user, this.updateView});
 
   @override
   State<UserCard> createState() => _UserCardState();
@@ -24,17 +26,12 @@ class _UserCardState extends State<UserCard> {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
-              backgroundColor: Colors.transparent,
-              context: context,
-              builder: ((context) {
-                return ModalContent(
-                    content: UserDetails(
-                  user: widget.user,
-                      updateView: widget.updateView,
-                ));
-              }),
-              isScrollControlled: true);
+          ModalManager.showModal(
+              content: UserDetails(
+                user: widget.user,
+                updateView: widget.updateView,
+              ),
+              context: context);
         },
         child: CustomCard(
           width: width > kMobileWidth ? width / 2 : width,
@@ -58,7 +55,7 @@ class _UserCardState extends State<UserCard> {
                     children: [
                       Text(
                         widget.user["username"],
-                        style: kContentTextStyle(customFontSize: kMobileFont)
+                        style: kContentTextStyle(customFontSize: ResponsiveManager.setFont(context))
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
@@ -66,7 +63,7 @@ class _UserCardState extends State<UserCard> {
                       ),
                       Text(
                         widget.user["role"]["role"],
-                        style: kContentTextStyle(customFontSize: 14).copyWith(
+                        style: kContentTextStyle(customFontSize: ResponsiveManager.setFont(context)-2).copyWith(
                             fontWeight: FontWeight.normal, color: Colors.black),
                       )
                     ],

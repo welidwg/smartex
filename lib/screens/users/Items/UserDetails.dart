@@ -8,6 +8,7 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomDropdown.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
+import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/storage/LocalStorage.dart';
 
@@ -69,7 +70,7 @@ class _UserDetailsState extends State<UserDetails> {
               widget.user['username'],
               style: kTitleTextStyle(
                   customFontSize:
-                      width > kMobileWidth ? kTabletFont - 2 : kMobileFont),
+                  ResponsiveManager.setFont(context)),
             )
           ],
         ),

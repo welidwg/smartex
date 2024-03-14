@@ -4,7 +4,7 @@ import 'package:smartex/constants.dart';
 import 'package:smartex/storage/LocalStorage.dart';
 
 class UsersRequestManager {
-  ApiManager manager = ApiManager(url: kUrlLaravel);
+  static ApiManager manager = ApiManager(url: kUrlLaravel);
 
   Future<List<dynamic>> getUsersList({String? search}) async {
     return await manager.getRequestList("utilisateur?search=$search", null);
@@ -27,7 +27,7 @@ class UsersRequestManager {
     return await manager.sendRequest("post", "login", data);
   }
 
-  Future<Map<String, dynamic>> logoutUser() async {
+  static Future<Map<String, dynamic>> logoutUser() async {
 
     var res=await manager.sendRequest("post", "logout", {});
     await LocalStorage.flashSession();

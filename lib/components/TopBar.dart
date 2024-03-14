@@ -2,10 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/notification/NotificationScreen.dart';
 import 'package:smartex/storage/LocalStorage.dart';
 
 class TopBar extends StatefulWidget {
-  const TopBar({super.key});
+  final Function(dynamic) updater;
+
+  const TopBar({super.key, required this.updater});
 
   @override
   State<TopBar> createState() => _TopBarState();
@@ -54,23 +57,65 @@ class _TopBarState extends State<TopBar> {
               ),
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.person,
-                  color: kPrimaryColor,
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: user.isEmpty
-                      ? LoadingComponent()
-                      : Text(
-                          user["username"],
-                          style: TextStyle(
-                              fontSize: kMobileFont,
-                              color: kPrimaryColor,
-                              fontWeight: FontWeight.bold),
+                GestureDetector(
+                  onTap: () {
+                    widget.updater(const NotificationScreen());
+                  },
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.notifications,
+                          color: kPrimaryColor,
                         ),
-                )
+                      ),
+                      CircleAvatar(
+                        backgroundColor: kPrimaryColor,
+                        foregroundColor: Colors.white,
+                        maxRadius: 8,
+                        child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.transparent,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  "2",
+                                  style: TextStyle(
+                                      fontSize: 11, fontFamily: "Font1"),
+                                ),
+                              ],
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.person,
+                      color: kPrimaryColor,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 20),
+                      child: user.isEmpty
+                          ? LoadingComponent()
+                          : Text(
+                              user["username"],
+                              style: TextStyle(
+                                  fontSize: kMobileFont,
+                                  color: kPrimaryColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    )
+                  ],
+                ),
               ],
             )
           ],

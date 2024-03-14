@@ -61,10 +61,12 @@ class _TabletLoginState extends State<TabletLogin> {
           ),
         ),
         const Expanded(
-            child: Padding(
+            child: SingleChildScrollView(
+              child: Padding(
           padding: EdgeInsets.all(18.0),
           child: LoginForm(),
-        ))
+        ),
+            ))
       ],
     );
   }

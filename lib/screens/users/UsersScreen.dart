@@ -10,6 +10,7 @@ import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/BlurredModal.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Titles/HeadLine.dart';
 import 'package:smartex/constants.dart';
@@ -20,7 +21,7 @@ class UsersScreen extends StatefulWidget {
   double? width;
   late Function? updateView;
 
-  UsersScreen({super.key, this.width,  this.updateView});
+  UsersScreen({super.key, this.width, this.updateView});
 
   static const String id = "users_screen";
 
@@ -49,7 +50,10 @@ class _UsersScreenState extends State<UsersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -68,19 +72,11 @@ class _UsersScreenState extends State<UsersScreen> {
               FloatingActionButton(
                 heroTag: "addUserTag",
                 onPressed: () {
-                  showModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      context: context,
-                      isScrollControlled: true,
-                      isDismissible: false,
-                      builder: ((context) {
-                        return Builder(builder: (BuildContext ct) {
-                          return AddUserForm(
-                            context: ct,
-                            updateView: initUsers,
-                          );
-                        });
-                      }));
+                  ModalManager.showModal(content: AddUserForm(
+                    context: context,
+                    updateView: initUsers,
+                  ), context: context);
+
                 },
                 elevation: 0,
                 backgroundColor: kPrimaryColor.withOpacity(1),
@@ -124,42 +120,42 @@ class _UsersScreenState extends State<UsersScreen> {
           ),
           Expanded(
               child: Container(
-            margin: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: CupertinoColors.white,
-              boxShadow: const [
-                BoxShadow(
-                  color: kSecondaryColor,
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  offset: Offset(1, 1),
+                margin: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: CupertinoColors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: kSecondaryColor,
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                      offset: Offset(1, 1),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: isLoading
-                ? ListPlaceholder()
-                : users.isEmpty
+                child: isLoading
+                    ? ListPlaceholder()
+                    : users.isEmpty
                     ? SizedBox(
-                        width: width,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Center(child: Text("Aucun utilisateur trouvé")),
-                          ],
-                        ))
+                    width: width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Center(child: Text("Aucun utilisateur trouvé")),
+                      ],
+                    ))
                     : ListView(
-                        physics: const BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(bottom: 16),
-                        children: users.map((e) {
-                          return UserCard(
-                            user: e,
-                            updateView: initUsers,
-                          );
-                        }).toList()),
-          ))
+                    physics: const BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(bottom: 16),
+                    children: users.map((e) {
+                      return UserCard(
+                        user: e,
+                        updateView: initUsers,
+                      );
+                    }).toList()),
+              ))
         ],
       ),
     );

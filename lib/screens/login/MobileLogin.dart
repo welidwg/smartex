@@ -28,7 +28,7 @@ class MobileLogin extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height:330,
+            height:380,
             decoration:  BoxDecoration(
               color: kPrimaryColor.withOpacity(1),
               borderRadius: const BorderRadius.only(bottomLeft: Radius.elliptical(200, 35),bottomRight:Radius.elliptical(200, 35) )

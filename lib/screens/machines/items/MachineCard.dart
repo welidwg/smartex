@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smartex/components/Cards/Card.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/RefItems/RefDetails.dart';
 import 'package:smartex/screens/machines/items/machinItems/MachineDetails.dart';
@@ -29,23 +30,21 @@ class _MachineCardState extends State<MachineCard> {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          showModalBottomSheet(
-              backgroundColor: Colors.transparent,
-              context: context,
-              builder: ((context) {
-                return ModalContent(
-                    content: widget.type == "re"
-                        ? RefDetails(
-                            ref: widget.item,
-                            updateView: widget.updateView,
-                          )
-                        :  MachineDetails(updateView:widget.updateView,machine: widget.item,));
-              }),
-              isScrollControlled: true);
+          ModalManager.showModal(
+              content: widget.type == "re"
+                  ? RefDetails(
+                      ref: widget.item,
+                      updateView: widget.updateView,
+                    )
+                  : MachineDetails(
+                      updateView: widget.updateView,
+                      machine: widget.item,
+                    ),
+              context: context);
         },
         child: CustomCard(
           padding: 10,
-          width: width > kMobileWidth ? width / 7 : width * 0.6,
+          width: width > kMobileWidth ? width / 5 : width * 0.6,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,10 +61,12 @@ class _MachineCardState extends State<MachineCard> {
                         widget.type == "re"
                             ? widget.item["ref"]
                             : "${widget.item["reference"]["ref"]}#${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
-                        style: kContentTextStyle(customFontSize: kMobileFont)
+                        style: kContentTextStyle(customFontSize: width>kMobileWidth?kTabletFont : kMobileFont)
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
-                      widget.type=="ma" ? Text("${widget.item["etat"]["libelle"]}") : Container()
+                      widget.type == "ma"
+                          ? Text("${widget.item["etat"]["libelle"]}",style: TextStyle(fontSize: width>kMobileWidth?kTabletFont-3 : kMobileFont),)
+                          : Container()
                     ],
                   ),
                 ],

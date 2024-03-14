@@ -7,6 +7,7 @@ import 'package:smartex/Api/users/UsersRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/MainScreen.dart';
 import 'package:smartex/screens/login/PasswordRecovery.dart';
@@ -124,15 +125,17 @@ class _LoginFormState extends State<LoginForm> {
           ),
           GestureDetector(
               onTap: () {
-                showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  isDismissible: false,
-                  builder: ((context) {
-                    return const PasswordRecovery();
-                  }),
-                  isScrollControlled: true,
-                );
+                // showModalBottomSheet(
+                //   backgroundColor: Colors.transparent,
+                //   constraints: BoxConstraints(maxWidth: width>kMobileWidth ? width*0.5 : width),
+                //   context: context,
+                //   isDismissible: false,
+                //   builder: ((context) {
+                //     return const PasswordRecovery();
+                //   }),
+                //   isScrollControlled: true,
+                // );
+                ModalManager.showModal(content: const PasswordRecovery(), context: context);
               },
               child: const Center(
                 child: Text(

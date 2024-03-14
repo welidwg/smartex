@@ -6,6 +6,7 @@ import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
@@ -62,10 +63,10 @@ class _MachinesListState extends State<MachinesList> {
                         color: kPrimaryColor,
                       ),
                       Text(
-                        "Machines en stock",
+                        "Machines",
                         style: kTitleTextStyle(
                             customFontSize: width > kMobileWidth
-                                ? kTabletFont - 2
+                                ? kTabletFont
                                 : kMobileFont + 1),
                       )
                     ],
@@ -80,16 +81,11 @@ class _MachinesListState extends State<MachinesList> {
                       elevation: 1,
                       mini: true,
                       onPressed: () {
-                        showModalBottomSheet(
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            builder: ((context) {
-                              return ModalContent(
-                                  content: AddMachineForm(
-                                updateView: initMachines,
-                              ));
-                            }),
-                            isScrollControlled: true);
+                        ModalManager.showModal(
+                            content: AddMachineForm(
+                              updateView: initMachines,
+                            ),
+                            context: context);
                       },
                       backgroundColor: kPrimaryColor,
                       child: const Icon(Icons.add),
@@ -173,18 +169,14 @@ class _MachinesListState extends State<MachinesList> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
-                child: const Text(
+                child:  Text(
                   "Afficher tous",
                   style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.bold),
+                      color: kPrimaryColor, fontWeight: FontWeight.bold,fontSize: width>kMobileWidth ? kTabletFont : kMobileFont ),
                 ),
                 onTap: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return const ModalContent(content: AllMachineScreen());
-                      });
+                  ModalManager.showModal(
+                      content: const AllMachineScreen(), context: context);
                 },
               ),
               const Icon(Icons.keyboard_arrow_down)
