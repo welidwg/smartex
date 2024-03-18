@@ -23,6 +23,24 @@ class MachineCard extends StatefulWidget {
 }
 
 class _MachineCardState extends State<MachineCard> {
+  bool isActiveExchange = false;
+
+  checkActiveExchange() {
+    if (widget.type == "ma") {
+      setState(() {
+        isActiveExchange =
+            widget.item["echanges"].any((echange) => echange['isActive'] == 1);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkActiveExchange();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -61,12 +79,22 @@ class _MachineCardState extends State<MachineCard> {
                         widget.type == "re"
                             ? widget.item["ref"]
                             : "${widget.item["reference"]["ref"]}#${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
-                        style: kContentTextStyle(customFontSize: width>kMobileWidth?kTabletFont : kMobileFont)
+                        style: kContentTextStyle(
+                                customFontSize: width > kMobileWidth
+                                    ? kTabletFont
+                                    : kMobileFont)
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
-                      widget.type == "ma"
-                          ? Text("${widget.item["etat"]["libelle"]}",style: TextStyle(fontSize: width>kMobileWidth?kTabletFont-3 : kMobileFont),)
-                          : Container()
+                      // widget.type == "ma"
+                      //     ? Text(
+                      //         "${widget.item["etat"]["libelle"]}",
+                      //         style: TextStyle(
+                      //             fontSize: width > kMobileWidth
+                      //                 ? kTabletFont - 3
+                      //                 : kMobileFont),
+                      //       )
+                      //     : Container(),
+                      isActiveExchange ? Text("En échange") : SizedBox()
                     ],
                   ),
                 ],

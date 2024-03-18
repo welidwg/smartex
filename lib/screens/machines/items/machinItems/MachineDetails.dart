@@ -14,6 +14,9 @@ import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/Placeholders/FormPlaceholder.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/machinItems/History.dart';
+import 'package:smartex/screens/machines/items/machinItems/echange/HistoryEchanges.dart';
+import 'package:smartex/screens/machines/items/machinItems/echange/echangeDetails.dart';
+import 'package:smartex/screens/machines/items/machinItems/echange/echangeScreen.dart';
 
 class MachineDetails extends StatefulWidget {
   final Function updateView;
@@ -43,6 +46,9 @@ class _MachineDetailsState extends State<MachineDetails> {
   EtatRequestManager etatManager = EtatRequestManager();
   ReferencesRequestManager refManager = ReferencesRequestManager();
   MachinesRequestManager machineManager = MachinesRequestManager();
+  bool isActiveExchange = false;
+  List<dynamic> echanges = [];
+  List<dynamic> echangeActif = [];
 
   initList() async {
     chaines = await chaineManager.getChainesList(search: "");
@@ -55,6 +61,10 @@ class _MachineDetailsState extends State<MachineDetails> {
       defaultParc = widget.machine["parc"];
       isLoading = false;
       isLoadingForm = false;
+      isActiveExchange =
+          widget.machine["echanges"].any((echange) => echange['isActive'] == 1);
+      echanges = widget.machine["echanges"];
+      echangeActif = echanges.where((ex) => ex["isActive"] == 1).toList();
     });
   }
 
@@ -63,7 +73,7 @@ class _MachineDetailsState extends State<MachineDetails> {
     // TODO: implement initState
     super.initState();
     parcs[0] = "Parc stock";
-    parcs[1] = "Parc occupé";
+    parcs[1] = "Parc chaine";
     codeCtrl = TextEditingController(text: widget.machine["code"]);
     initList();
   }
@@ -333,25 +343,102 @@ class _MachineDetailsState extends State<MachineDetails> {
                           // widget.setter!(int.parse(newVal));
                         }),
                   ),
+                  if (isActiveExchange)
+                    Column(
+                      children: [
+                        const SizedBox(
+                          height: 14,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            ModalManager.showModal(
+                                context: context,
+                                content: EchangeDetails(
+                                    echange: echangeActif,
+                                    updateView: widget.updateView));
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.info_outlined,
+                                size: 15,
+                                color: kPrimaryColor,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                "Machine est en échange avec la chaîne ${echangeActif[0]["chaine_to"]["libelle"]}",
+                                style: const TextStyle(
+                                    color: kPrimaryColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_ios_sharp,
+                                size: 15,
+                                color: kPrimaryColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    const SizedBox(),
                 ],
               ),
               const CustomSpacer(),
-              isLoadingForm
-                  ? LoadingComponent()
-                  : Row(
+              if (isLoadingForm)
+                LoadingComponent()
+              else
+                Column(
+                  children: [
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
                             child: MyActionButton(
                           label: "",
                           color: kPrimaryColor,
-                          icon: Icons.save_as,
+                          icon: Icons.compare_arrows,
                           isLoading: isLoadingForm,
-                          onPressed: () async {
-                            setState(() {
-                              isLoadingForm = true;
-                            });
-                            await _saveMachineData(context);
+                          onPressed: () {
+                            if (isActiveExchange) {
+                              showDialog(
+                                  context: context,
+                                  builder: ((context) {
+                                    return CupertinoAlertDialog(
+                                      title: const Text("Echange impossible"),
+                                      content: const Text(
+                                          "Cette machine est déjà en échange avec une autre chaine.Veuillez annuler cet échange pour continuer."),
+                                      actions: <Widget>[
+                                        CupertinoDialogAction(
+                                          child: const Text(
+                                            "J'ai compris",
+                                            style:
+                                                TextStyle(color: kPrimaryColor),
+                                          ),
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  }));
+                            } else {
+                              ModalManager.showModal(
+                                  content: EchangeScreen(
+                                      machine: widget.machine,
+                                      updateView: () async {
+                                        await widget.updateView();
+                                        await initList();
+                                      }),
+                                  context: context);
+                            }
                           },
                         )),
                         const SizedBox(
@@ -363,15 +450,70 @@ class _MachineDetailsState extends State<MachineDetails> {
                           color: kPrimaryColor,
                           icon: Icons.manage_history,
                           onPressed: () {
-                            //Navigator.pop(context);
                             ModalManager.showModal(
                                 context: context,
-                                content: HistoryMachine(
-                                  updateView: widget.updateView,
-                                  machine: widget.machine,
+                                content: Column(
+                                  children: [
+                                    MyActionButton(
+                                      icon: CupertinoIcons.gear_solid,
+                                      label: "Historique des pannes",
+                                      color: kPrimaryColor,
+                                      onPressed: () {
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                        ModalManager.showModal(
+                                            context: context,
+                                            content: HistoryMachine(
+                                              updateView: widget.updateView,
+                                              machine: widget.machine,
+                                            ));
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    MyActionButton(
+                                      icon: Icons.compare_arrows_sharp,
+                                      label: "Historique des échanges",
+                                      color: kPrimaryColor,
+                                      onPressed: () {
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                        ModalManager.showModal(
+                                            context: context,
+                                            content: HistoryEchanges(
+                                              echanges:
+                                                  widget.machine["echanges"],
+                                            ));
+                                      },
+                                    ),
+                                  ],
                                 ));
                           },
                         )),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: MyActionButton(
+                            label: "",
+                            color: kPrimaryColor,
+                            icon: Icons.save_as,
+                            isLoading: isLoadingForm,
+                            onPressed: () async {
+                              setState(() {
+                                isLoadingForm = true;
+                              });
+                              await _saveMachineData(context);
+                            },
+                          ),
+                        ),
                         const SizedBox(
                           width: 10,
                         ),
@@ -385,9 +527,11 @@ class _MachineDetailsState extends State<MachineDetails> {
                             });
                             await _deleteMachineData(context);
                           },
-                        )
+                        ),
                       ],
-                    )
+                    ),
+                  ],
+                ),
             ],
     );
     ;

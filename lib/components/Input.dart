@@ -100,7 +100,7 @@ class _InputState extends State<Input> {
               const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           hintStyle: const TextStyle(color: kPrimaryColor),
           contentPadding: EdgeInsets.symmetric(
-              vertical: widget.vPadding == null ? 22.0 : widget.vPadding!,
+              vertical: widget.vPadding == null ? 0.0 : widget.vPadding!,
               horizontal: widget.hPadding == null ? 20.0 : widget.hPadding!),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(7.0)),

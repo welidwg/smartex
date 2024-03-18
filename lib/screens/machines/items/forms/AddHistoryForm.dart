@@ -165,9 +165,12 @@ class _AddHistoryFormState extends State<AddHistoryForm> {
     };
     var res = await HistoryRequestManager.addHistory(data);
     if (res["type"] == "success") {
-      Navigator.pop(context);
-      //ScaffoldMessenger.of(context)
-      //   .showSnackBar(SnackBar(content: Text(res['message'])));
+      if(mounted){
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(res['message'])));
+      }
+
     } else {
       print(res["message"]);
     }

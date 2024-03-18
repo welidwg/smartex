@@ -8,5 +8,7 @@ class HistoryRequestManager {
   static Future<Map<String, dynamic>> addHistory(Map<String, dynamic> data) async {
     return await manager.sendRequest("post", suffix, data);
   }
-
+  static Future<Map<String, dynamic>> getEstimation(Map<String, dynamic> data) async {
+    return await manager.sendRequest("get","estimate/${data["id_machine"]}", data);
+  }
 }
