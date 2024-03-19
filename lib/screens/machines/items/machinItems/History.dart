@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smartex/Api/history/HistoryRequestManager.dart';
 import 'package:smartex/components/Button.dart';
+import 'package:smartex/components/Cards/SecondaryCard.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/ResponsiveManager.dart';
@@ -25,6 +26,10 @@ class _HistoryMachineState extends State<HistoryMachine> {
   late Map<String, dynamic> estimations = {};
   late String predDate = "";
   late String predHour = "";
+  DateTime aujourdhui = DateTime.now();
+  late DateTime targetDate;
+  ScrollController scrollController = ScrollController();
+  bool isReversed = false;
 
   initHistory() async {
     setState(() {
@@ -39,6 +44,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
             .format(DateTime.parse(estimations["estimated"]));
         predHour = DateFormat('HH:mm')
             .format(DateTime.parse(estimations["estimated"]));
+        targetDate = DateTime.parse(estimations["estimated"]);
       });
     }
   }
@@ -74,8 +80,58 @@ class _HistoryMachineState extends State<HistoryMachine> {
             )
           ],
         ),
-        SizedBox(
-          height: 10,
+        const SizedBox(
+          height: 20,
+        ),
+        Container(
+          decoration:
+          BoxDecoration(
+            color: kSecondaryColor.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20)
+          ),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                height: 420,
+                child: Scrollbar(
+                  controller: scrollController,
+                  thumbVisibility: true,
+                  interactive: false,
+                  child: ListView.builder(
+                      controller: scrollController,
+                      reverse: isReversed,
+                      itemBuilder: (context, index) {
+                        if (widget.machine["historique"].length == 0) {
+                          return const Center(child: Text("Aucun historique"));
+                        } else {
+                          return HistoryCard(
+                            history: widget.machine["historique"][index],
+                          );
+                        }
+                      },
+                      itemCount: widget.machine["historique"].length,
+                      physics: const BouncingScrollPhysics()),
+                ),
+              ),
+              FloatingActionButton(
+                mini: true,
+                backgroundColor: kPrimaryColor,
+                onPressed: () {
+                  setState(() {
+                    isReversed = !isReversed;
+                  });
+                },
+                child: Icon(isReversed
+                    ? Icons.arrow_drop_up_sharp
+                    : Icons.arrow_drop_down),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 20,
         ),
         estimations.isNotEmpty
             ? Container(
@@ -107,47 +163,54 @@ class _HistoryMachineState extends State<HistoryMachine> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Date de panne prochain estimé : ",
+                          "Date de panne prochain estimé ${targetDate.isBefore(aujourdhui) ?'(Déjà passé)':'(Dans ${targetDate.difference(aujourdhui).inDays} jours)'} :",
                           style: TextStyle(
                               fontSize: ResponsiveManager.setFont(context) - 1,
                               fontWeight: FontWeight.bold,
                               color: kPrimaryColor),
                         ),
                         const SizedBox(
-                          height: 5,
+                          height: 8,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.calendar_month_rounded,
-                                  size: 15,
-                                  color: kPrimaryColor,
-                                ),
-                                Text(predDate,
-                                    style: TextStyle(
-                                        fontSize:
-                                            ResponsiveManager.setFont(context) -
-                                                2,
-                                        color: kPrimaryColor)),
-                              ],
+                            SecondaryCard(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.calendar_month_rounded,
+                                    size: 15,
+                                    color: kPrimaryColor,
+                                  ),
+                                  Text(predDate,
+                                      style: TextStyle(
+                                          fontSize: ResponsiveManager.setFont(
+                                                  context) -
+                                              2,
+                                          color: kPrimaryColor)),
+                                ],
+                              ),
                             ),
-                            SizedBox(width: 10,),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.lock_clock,
-                                  size: 15,
-                                  color: kPrimaryColor,
-                                ),
-                                Text(predHour,
-                                    style: TextStyle(
-                                        fontSize:
-                                            ResponsiveManager.setFont(context) -
-                                                2,
-                                        color: kPrimaryColor)),
-                              ],
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SecondaryCard(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time_filled_outlined,
+                                    size: 15,
+                                    color: kPrimaryColor,
+                                  ),
+                                  Text(predHour,
+                                      style: TextStyle(
+                                          fontSize: ResponsiveManager.setFont(
+                                                  context) -
+                                              2,
+                                          color: kPrimaryColor)),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -157,26 +220,6 @@ class _HistoryMachineState extends State<HistoryMachine> {
                 ),
               )
             : SizedBox(),
-        const SizedBox(
-          height: 20,
-        ),
-        SizedBox(
-          height: 420,
-          child: Scrollbar(
-            thumbVisibility: true,
-            interactive: true,
-            child: ListView(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                children: widget.machine["historique"].length == 0
-                    ? [const Center(child: Text("Aucun historique"))]
-                    : widget.machine["historique"].map<Widget>((e) {
-                        return HistoryCard(
-                          history: e,
-                        );
-                      }).toList()),
-          ),
-        ),
         const CustomSpacer(),
         MyActionButton(
           label: "Ajouter",
