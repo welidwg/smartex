@@ -69,46 +69,42 @@ class _LinkedMachinesState extends State<LinkedMachines> {
             }),
         const CustomSpacer(),
         Container(
-          height: 300,
-          width: width,
-          margin: const EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: CupertinoColors.white,
-            boxShadow: const [
-              BoxShadow(
-                color: kSecondaryColor,
-                spreadRadius: 2,
-                blurRadius: 2,
-                offset: Offset(1, 1),
-              ),
-            ],
-          ),
-          child: widget.ref.isEmpty || widget.ref["machines"].length == 0
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Aucune machine liée à cette référence"),
-                  ],
-                )
-              : ListView(
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  //padding: EdgeInsets.only(bottom: 16),
-                  children: (widget.ref["machines"] as List<dynamic>)
-                      .map<Widget>((e) {
-                    if (e["code"].toString().contains(search)) {
-                      return MachineCard(
-                        type: "ma",
-                        item: e,
-                        updateView: () {},
-                      );
-                    }
-                    return Container();
-                  }).toList()),
-        )
+            height: 300,
+            width: width,
+            margin: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: CupertinoColors.white,
+              boxShadow: const [
+                BoxShadow(
+                  color: kSecondaryColor,
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+            child: widget.ref.isEmpty || widget.ref["machines"].length == 0
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      Text("Aucune machine liée à cette référence"),
+                    ],
+                  )
+                : ListView.builder(
+                    itemBuilder: (context, index) {
+                      if(widget.ref["machines"][index]["code"].toString().contains(search)){
+                        return MachineCard(
+                          type: "ma",
+                          item: widget.ref["machines"][index],
+                          updateView: () {},
+                        );
+                      }
+
+                    },
+                    itemCount: widget.ref["machines"].length,
+                  ))
       ],
     );
     ;

@@ -26,6 +26,7 @@ class _LoginFormState extends State<LoginForm> {
   TextEditingController passwordCtrl = TextEditingController();
   UsersRequestManager manager = UsersRequestManager();
   bool isLoading = false;
+  bool isPassword = true;
 
   _authUser(BuildContext context) async {
     Map<String, dynamic> data = {
@@ -56,21 +57,23 @@ class _LoginFormState extends State<LoginForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-           SizedBox(
-             width: width-50,
-             child: Row(
-               children: [
-                 Text(
-                   "Identifiez-Vous",
-                   textAlign: TextAlign.center,
-                   style: TextStyle(
-                       fontSize: width>kMobileWidth ? kTabletFont+9 : kMobileFont+7,
-                       color: kPrimaryColor,
-                       fontWeight: FontWeight.bold),
-                 ),
-               ],
-             ),
-           ),
+          SizedBox(
+            width: width - 50,
+            child: Row(
+              children: [
+                Text(
+                  "Identifiez-Vous",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: width > kMobileWidth
+                          ? kTabletFont + 9
+                          : kMobileFont + 7,
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(
             height: 16,
           ),
@@ -78,6 +81,7 @@ class _LoginFormState extends State<LoginForm> {
               width: width - 50,
               child: Input(
                   label: "Nom d'utilisateur",
+                  vPadding: 18,
                   controller: usernameCtrl,
                   is_Password: false,
                   message: "Veuillez saisir votre nom d'utilisateur",
@@ -89,9 +93,20 @@ class _LoginFormState extends State<LoginForm> {
               width: width - 50,
               child: Input(
                   label: "Mot de passe",
+                  vPadding: 18,
                   controller: passwordCtrl,
                   message: "Veuillez saisir votre mot de passe",
-                  is_Password: true,
+                  is_Password: isPassword,
+                  suffixIc: GestureDetector(
+                    child: Icon(isPassword
+                        ? CupertinoIcons.eye_fill
+                        : CupertinoIcons.eye_slash_fill),
+                    onTap: () {
+                      setState(() {
+                        isPassword = !isPassword;
+                      });
+                    },
+                  ),
                   onChange: (value) {})),
           const SizedBox(
             height: 16,
@@ -135,7 +150,8 @@ class _LoginFormState extends State<LoginForm> {
                 //   }),
                 //   isScrollControlled: true,
                 // );
-                ModalManager.showModal(content: const PasswordRecovery(), context: context);
+                ModalManager.showModal(
+                    content: const PasswordRecovery(), context: context);
               },
               child: const Center(
                 child: Text(

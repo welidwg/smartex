@@ -1,13 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 import 'package:smartex/Api/users/UsersRequestManager.dart';
 import 'package:smartex/components/Button.dart';
+import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/components/TopBar.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/home/HomeScreen.dart';
 import 'package:smartex/screens/login/LoginScreen.dart';
 import 'package:smartex/screens/machines/MachinesScreen.dart';
+import 'package:smartex/screens/notification/NotificationScreen.dart';
+import 'package:smartex/screens/notification/NotificationService.dart';
 import 'package:smartex/screens/users/UsersScreen.dart';
+import 'package:smartex/storage/LocalStorage.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -22,6 +30,54 @@ class _MainScreenState extends State<MainScreen> {
   bool updateView = false;
   Widget currentPage = const HomeScreen();
   UsersRequestManager manager = UsersRequestManager();
+  late PusherChannelsFlutter pusher = PusherChannelsFlutter.getInstance();
+  late Map<String, dynamic> user;
+
+  void onError(String message, int? code, dynamic e) {
+    print("onError: $message code: $code exception: $e");
+  }
+
+  void ReceivedNotif(PusherEvent event) async {
+    if (jsonEncode(event.data).toString() != "{}") {
+      var data = jsonDecode(event.data);
+      await NotificationService(redirect: (String route) {
+        Navigator.pushNamed(context, route);
+      }).showNotification(title: data["title"], body: data["content"]);
+      if (currentPage.runtimeType == NotificationScreen) {
+        setState(() {
+          currentPage = KeyedSubtree(
+            key:Key("${UniqueKey()}"),
+            child: const NotificationScreen(),
+          );
+        });
+      }
+    }
+  }
+
+  void onSubscriptionSucceeded(String channelName, dynamic data) {
+    print("onSubscriptionSucceeded: $channelName data: $data");
+  }
+
+  void initPusher() async {
+    user = await LocalStorage.getUser();
+
+    await pusher.init(
+      apiKey: "d434bf4ee07c17bd7135",
+      cluster: "eu",
+      onError: onError,
+      onEvent: ReceivedNotif,
+      onSubscriptionSucceeded: onSubscriptionSucceeded,
+    );
+    await pusher.subscribe(channelName: "notif${user["role"]["id"]}");
+    await pusher.connect();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    pusher.disconnect();
+    super.dispose();
+  }
 
   void refreshView() {
     setState(() {
@@ -34,6 +90,13 @@ class _MainScreenState extends State<MainScreen> {
       currentPage = screen;
       //Navigator.pop(context);
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initPusher();
   }
 
   @override
@@ -90,11 +153,23 @@ class _MainScreenState extends State<MainScreen> {
                     height: 200,
                     child: DrawerHeader(
                         decoration: const BoxDecoration(color: kPrimaryColor),
-                        child: Row(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            kLogoSecondaryXS(
-                                cWidth: width > kMobileWidth ? 160 : 250)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                kLogoPrimaryXS(
+                                    cWidth: width > kMobileWidth ? 160 : 100)
+                              ],
+                            ),
+                            Text(
+                              "Smartex",
+                              style: GoogleFonts.alice(
+                                  color: Colors.white,
+                                  fontSize: width > kMobileWidth ? 30 : 27,
+                                  fontWeight: FontWeight.bold),
+                            )
                           ],
                         )),
                   ),

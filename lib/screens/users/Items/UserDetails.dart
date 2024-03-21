@@ -29,6 +29,7 @@ class _UserDetailsState extends State<UserDetails> {
   TextEditingController newPass = TextEditingController();
   UsersRequestManager manager = UsersRequestManager();
   bool isLoading = true;
+  bool isPassword = true;
 
   initRoles() async {
     roles = await RolesRequestManager.getRolesList(search: "");
@@ -36,6 +37,8 @@ class _UserDetailsState extends State<UserDetails> {
       setState(() {
         selectedRole = widget.user["role"]["id"];
         isLoading = false;
+         isPassword = true;
+
       });
     }
   }
@@ -69,8 +72,7 @@ class _UserDetailsState extends State<UserDetails> {
             Text(
               widget.user['username'],
               style: kTitleTextStyle(
-                  customFontSize:
-                  ResponsiveManager.setFont(context)),
+                  customFontSize: ResponsiveManager.setFont(context)),
             )
           ],
         ),
@@ -87,8 +89,18 @@ class _UserDetailsState extends State<UserDetails> {
         ),
         Input(
             label: "Nouveau Mot de passe",
-            is_Password: true,
+            is_Password: isPassword,
             controller: newPass,
+            suffixIc: GestureDetector(
+              child: Icon(isPassword
+                  ? CupertinoIcons.eye_fill
+                  : CupertinoIcons.eye_slash_fill),
+              onTap: () {
+                setState(() {
+                  isPassword = !isPassword;
+                });
+              },
+            ),
             onChange: (value) {}),
         const SizedBox(
           height: 8,

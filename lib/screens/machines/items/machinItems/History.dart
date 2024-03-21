@@ -84,11 +84,9 @@ class _HistoryMachineState extends State<HistoryMachine> {
           height: 20,
         ),
         Container(
-          decoration:
-          BoxDecoration(
-            color: kSecondaryColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20)
-          ),
+          decoration: BoxDecoration(
+              color: kSecondaryColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20)),
           child: Stack(
             alignment: Alignment.bottomRight,
             children: [
@@ -149,7 +147,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
                               fontWeight: FontWeight.bold,
                               color: kPrimaryColor),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         Text("${estimations["avg"]}",
@@ -163,7 +161,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Date de panne prochain estimé ${targetDate.isBefore(aujourdhui) ?'(Déjà passé)':'(Dans ${targetDate.difference(aujourdhui).inDays} jours)'} :",
+                          "Date de panne prochain estimé ${targetDate.month == aujourdhui.month && targetDate.year == aujourdhui.year && targetDate.day == aujourdhui.day ? "(Aujourd'hui)" : targetDate.isBefore(aujourdhui) ? '(Déjà passé)' : '(Dans ${targetDate.difference(aujourdhui).inDays} jours)'} :",
                           style: TextStyle(
                               fontSize: ResponsiveManager.setFont(context) - 1,
                               fontWeight: FontWeight.bold,

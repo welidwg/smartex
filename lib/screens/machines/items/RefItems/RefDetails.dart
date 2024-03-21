@@ -84,7 +84,6 @@ class _RefDetailsState extends State<RefDetails> {
             Expanded(
                 child: GestureDetector(
               onTap: () {
-                print(widget.ref["machines"].length);
                 ModalManager.showModal(
                     content: LinkedMachines(ref: widget.ref), context: context);
               },

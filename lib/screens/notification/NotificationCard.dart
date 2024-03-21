@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/notification/NotificationService.dart';
 
 class NotificationCard extends StatefulWidget {
-  const NotificationCard({super.key});
+  NotificationCard({super.key, required this.notification});
+
+  late Map<String, dynamic> notification;
 
   @override
   State<NotificationCard> createState() => _NotificationCardState();
@@ -26,11 +30,18 @@ class _NotificationCardState extends State<NotificationCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const CircleAvatar(
-                backgroundColor: kSecondaryColor,
-                child: Icon(
-                  Icons.notifications_active_rounded,
-                  color: kPrimaryColor,
+              GestureDetector(
+                onTap: () async {
+                  await NotificationService(redirect: (String route) {
+                    Navigator.of(context).pushReplacementNamed(route);
+                  }).showNotification(title: "Test", body: 'Test');
+                },
+                child: const CircleAvatar(
+                  backgroundColor: kSecondaryColor,
+                  child: Icon(
+                    Icons.notifications_active_rounded,
+                    color: kPrimaryColor,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -43,10 +54,10 @@ class _NotificationCardState extends State<NotificationCard> {
                     Row(
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             Text(
-                              "Titre",
-                              style: TextStyle(
+                              widget.notification["title"],
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                   color: kPrimaryColor),
@@ -55,13 +66,15 @@ class _NotificationCardState extends State<NotificationCard> {
                         ),
                       ],
                     ),
-                    const Text(
-                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry"),
-                    const SizedBox(height: 7,),
+                    Text(widget.notification["content"]),
+                    const SizedBox(
+                      height: 7,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: const [
-                        Text("10/06/2024 - 10:00",
+                      children: [
+                        Text(
+                            "${DateFormat("dd/MM/yyyy").format(DateTime.parse(widget.notification["created_at"]))} - ${DateFormat("HH:mm").format(DateTime.parse(widget.notification["created_at"]))}",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     )

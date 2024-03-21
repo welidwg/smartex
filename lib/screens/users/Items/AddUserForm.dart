@@ -31,6 +31,7 @@ class _AddUserFormState extends State<AddUserForm> {
   late List<dynamic> users = [];
   final formKey = GlobalKey<FormState>();
   bool isLoading = true;
+  bool isPassword=true;
 
   initRoles() async {
     roles = await RolesRequestManager.getRolesList(search: "");
@@ -88,9 +89,19 @@ class _AddUserFormState extends State<AddUserForm> {
               ),
               Input(
                   label: "Mot de passe",
-                  is_Password: true,
+                  is_Password: isPassword,
                   onChange: (value) {},
                   controller: password,
+                  suffixIc: GestureDetector(
+                    child: Icon(isPassword
+                        ? CupertinoIcons.eye_fill
+                        : CupertinoIcons.eye_slash_fill),
+                    onTap: () {
+                      setState(() {
+                        isPassword = !isPassword;
+                      });
+                    },
+                  ),
                   message: "Veuillez saisir le mot de passe"),
               const SizedBox(
                 height: 8,
