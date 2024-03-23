@@ -27,7 +27,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
   late String predDate = "";
   late String predHour = "";
   DateTime aujourdhui = DateTime.now();
-  late DateTime targetDate;
+  late DateTime? targetDate;
   ScrollController scrollController = ScrollController();
   bool isReversed = false;
 
@@ -36,9 +36,10 @@ class _HistoryMachineState extends State<HistoryMachine> {
       ma = widget.machine;
     });
     widget.updateView();
+    print(ma["historique"]);
     estimations =
         await HistoryRequestManager.getEstimation({"id_machine": ma["id"]});
-    if (estimations.isNotEmpty) {
+    if (estimations["type"]=="success") {
       setState(() {
         predDate = DateFormat('dd/MM/yyyy')
             .format(DateTime.parse(estimations["estimated"]));
@@ -46,6 +47,8 @@ class _HistoryMachineState extends State<HistoryMachine> {
             .format(DateTime.parse(estimations["estimated"]));
         targetDate = DateTime.parse(estimations["estimated"]);
       });
+    }else{
+      targetDate=null;
     }
   }
 
@@ -131,7 +134,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
         const SizedBox(
           height: 20,
         ),
-        estimations.isNotEmpty
+        estimations.isNotEmpty && targetDate!=null
             ? Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
@@ -161,7 +164,7 @@ class _HistoryMachineState extends State<HistoryMachine> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Date de panne prochain estimé ${targetDate.month == aujourdhui.month && targetDate.year == aujourdhui.year && targetDate.day == aujourdhui.day ? "(Aujourd'hui)" : targetDate.isBefore(aujourdhui) ? '(Déjà passé)' : '(Dans ${targetDate.difference(aujourdhui).inDays} jours)'} :",
+                          "Date de panne prochain estimé ${targetDate!.month == aujourdhui.month && targetDate!.year == aujourdhui.year && targetDate!.day == aujourdhui.day ? "(Aujourd'hui)" : targetDate!.isBefore(aujourdhui) ? '(Déjà passé)' : '(Dans ${targetDate!.difference(aujourdhui).inDays} jours)'} :",
                           style: TextStyle(
                               fontSize: ResponsiveManager.setFont(context) - 1,
                               fontWeight: FontWeight.bold,

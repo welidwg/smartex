@@ -8,8 +8,10 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomDropdown.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
+import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/users/Items/history/UserHistoryScreen.dart';
 import 'package:smartex/storage/LocalStorage.dart';
 
 class UserDetails extends StatefulWidget {
@@ -37,8 +39,7 @@ class _UserDetailsState extends State<UserDetails> {
       setState(() {
         selectedRole = widget.user["role"]["id"];
         isLoading = false;
-         isPassword = true;
-
+        isPassword = true;
       });
     }
   }
@@ -116,9 +117,6 @@ class _UserDetailsState extends State<UserDetails> {
                 style: TextStyle(fontSize: width > kMobileWidth ? 18 : 13),
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
             isLoading
                 ? kPlaceholder
                 : Container(
@@ -127,6 +125,7 @@ class _UserDetailsState extends State<UserDetails> {
                         border: Border.all(color: kPrimaryColor, width: 2),
                         borderRadius: BorderRadius.circular(7)),
                     child: DropdownButton(
+                        underline: Container(),
                         elevation: 0,
                         dropdownColor: kSecondaryColor,
                         style: const TextStyle(
@@ -158,7 +157,7 @@ class _UserDetailsState extends State<UserDetails> {
                         }),
                   ),
             const SizedBox(
-              height: 8,
+              height: 10,
             ),
             isLoading
                 ? Center(child: LoadingComponent())
@@ -178,6 +177,20 @@ class _UserDetailsState extends State<UserDetails> {
                           await _saveUserData(context);
                         },
                       )),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      MyActionButton(
+                        isLoading: isLoading,
+                        label: "",
+                        color: kPrimaryColor,
+                        icon: Icons.history,
+                        onPressed: () async {
+                          ModalManager.showModal(
+                              content:  UserHistoryScreen(user: widget.user),
+                              context: context);
+                        },
+                      ),
                       const SizedBox(
                         width: 10,
                       ),
@@ -232,13 +245,18 @@ class _UserDetailsState extends State<UserDetails> {
       if (current["id"] == res["user"]["id"]) {
         await LocalStorage.storage
             .write(key: 'user', value: json.encode(res["user"]));
-        print(await LocalStorage.getUser());
       }
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(res['message'])));
-      widget.updateView!();
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(res['message'])));
+        widget.updateView!();
+      }
     } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(res['message'])));
+      }
       print(res['message']);
     }
     setState(() {

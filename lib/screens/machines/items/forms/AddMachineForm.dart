@@ -14,6 +14,7 @@ import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/components/Placeholders/FormPlaceholder.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/ai/camera/CameraScreen.dart';
+import 'package:smartex/storage/LocalStorage.dart';
 
 class AddMachineForm extends StatefulWidget {
   Function? updateView;
@@ -403,12 +404,14 @@ class _AddMachineFormState extends State<AddMachineForm> {
   }
 
   _addMachine(BuildContext context) async {
+    var user=await LocalStorage.getUser();
     Map<String, dynamic> data = {
       "code": codeCtrl.text,
       "id_etat": defaultEtat,
       "id_chaine": defaultChaine,
       "id_reference": defaultRef,
-      "parc": defaultParc
+      "parc": defaultParc,
+      "added_by":user["id"]
     };
     var res = await machineManager.addMachines(data);
     if (res["type"] == "success") {

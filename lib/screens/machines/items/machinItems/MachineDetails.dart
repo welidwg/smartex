@@ -18,6 +18,7 @@ import 'package:smartex/screens/machines/items/machinItems/History.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/HistoryEchanges.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/echangeDetails.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/echangeScreen.dart';
+import 'package:smartex/storage/LocalStorage.dart';
 
 class MachineDetails extends StatefulWidget {
   final Function updateView;
@@ -52,7 +53,7 @@ class _MachineDetailsState extends State<MachineDetails> {
   List<dynamic> echangeActif = [];
   late Map<String, dynamic> estimations = {};
   DateTime aujourdhui = DateTime.now();
-  late DateTime targetDate;
+  late DateTime? targetDate;
 
   initList() async {
     chaines = await chaineManager.getChainesList(search: "");
@@ -72,8 +73,11 @@ class _MachineDetailsState extends State<MachineDetails> {
           widget.machine["echanges"].any((echange) => echange['isActive'] == 1);
       echanges = widget.machine["echanges"];
       echangeActif = echanges.where((ex) => ex["isActive"] == 1).toList();
-
-      targetDate = DateTime.parse(estimations["estimated"]);
+      if (estimations["type"] == "success") {
+        targetDate = DateTime.parse(estimations["estimated"]);
+      } else {
+        targetDate = null;
+      }
     });
   }
 
@@ -111,45 +115,50 @@ class _MachineDetailsState extends State<MachineDetails> {
                   )
                 ],
               ),
-              SizedBox(
-                height: 8,
-              ),
-              targetDate.difference(aujourdhui).inDays <= 7 && targetDate.difference(aujourdhui).inDays>=0
-                  ? Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.redAccent.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.warning_rounded,
-                            color: kPrimaryColor,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          Expanded(
-                              child: Text(
-                            "Cette machine peut tomber en panne dans ${ targetDate.difference(aujourdhui).inDays != 0 ? "${targetDate.difference(aujourdhui).inDays} jours" :"aujourd'hui"}",
-                            style: const TextStyle(color: kPrimaryColor),
-                          ))
-                        ],
-                      ),
-                    )
-                  : const SizedBox(height: 0,),
               const SizedBox(
                 height: 8,
               ),
+              targetDate != null
+                  ? targetDate!.difference(aujourdhui).inDays <= 7 &&
+                          targetDate!.difference(aujourdhui).inDays >= 0
+                      ? Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.redAccent.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.warning_rounded,
+                                color: kPrimaryColor,
+                              ),
+                              const SizedBox(
+                                width: 3,
+                              ),
+                              Expanded(
+                                  child: Text(
+                                "Cette machine peut tomber en panne dans ${targetDate?.difference(aujourdhui).inDays != 0 ? "${targetDate?.difference(aujourdhui).inDays} jours" : "aujourd'hui"}",
+                                style: const TextStyle(color: kPrimaryColor),
+                              ))
+                            ],
+                          ),
+                        )
+                      : const SizedBox(
+                          height: 0,
+                        )
+                  : const SizedBox(
+                      height: 8,
+                    ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     "Référence",
                     textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: kPrimaryColor),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kPrimaryColor),
                   ),
                   const SizedBox(
                     height: 10,
@@ -164,7 +173,7 @@ class _MachineDetailsState extends State<MachineDetails> {
                               borderRadius: BorderRadius.circular(7)),
                           child: DropdownButton(
                               elevation: 0,
-                              underline:Container(),
+                              underline: Container(),
                               dropdownColor: kSecondaryColor,
                               style: const TextStyle(
                                   color: kPrimaryColor, fontFamily: "Font1"),
@@ -206,7 +215,8 @@ class _MachineDetailsState extends State<MachineDetails> {
                   const Text(
                     "Code",
                     textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: kPrimaryColor),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kPrimaryColor),
                   ),
                   const SizedBox(
                     height: 10,
@@ -229,7 +239,8 @@ class _MachineDetailsState extends State<MachineDetails> {
                   const Text(
                     "Modifier l'état",
                     textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: kPrimaryColor),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kPrimaryColor),
                   ),
                   const SizedBox(
                     height: 10,
@@ -243,7 +254,7 @@ class _MachineDetailsState extends State<MachineDetails> {
                                   Border.all(color: kPrimaryColor, width: 2),
                               borderRadius: BorderRadius.circular(7)),
                           child: DropdownButton(
-                              underline:Container(),
+                              underline: Container(),
                               elevation: 0,
                               dropdownColor: kSecondaryColor,
                               style: const TextStyle(
@@ -286,7 +297,8 @@ class _MachineDetailsState extends State<MachineDetails> {
                   const Text(
                     "Chaîne",
                     textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: kPrimaryColor),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kPrimaryColor),
                   ),
                   const SizedBox(
                     height: 10,
@@ -301,7 +313,7 @@ class _MachineDetailsState extends State<MachineDetails> {
                               borderRadius: BorderRadius.circular(7)),
                           child: DropdownButton(
                               elevation: 0,
-                              underline:Container(),
+                              underline: Container(),
                               dropdownColor: kSecondaryColor,
                               style: const TextStyle(
                                   color: kPrimaryColor, fontFamily: "Font1"),
@@ -343,7 +355,8 @@ class _MachineDetailsState extends State<MachineDetails> {
                   const Text(
                     "Parc",
                     textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.bold,color: kPrimaryColor),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: kPrimaryColor),
                   ),
                   const SizedBox(
                     height: 10,
@@ -354,7 +367,7 @@ class _MachineDetailsState extends State<MachineDetails> {
                         border: Border.all(color: kPrimaryColor, width: 2),
                         borderRadius: BorderRadius.circular(7)),
                     child: DropdownButton(
-                      underline:Container(),
+                        underline: Container(),
                         elevation: 0,
                         dropdownColor: kSecondaryColor,
                         style: const TextStyle(
@@ -579,13 +592,15 @@ class _MachineDetailsState extends State<MachineDetails> {
   }
 
   _saveMachineData(BuildContext context) async {
+    var user = await LocalStorage.getUser();
     Map<String, dynamic> data = {
       "id": widget.machine["id"],
       "code": codeCtrl.text,
       "id_etat": defaultEtat,
       "id_chaine": defaultChaine,
       "id_reference": defaultRef,
-      "parc": defaultParc
+      "parc": defaultParc,
+      "edited_by": user["id"]
     };
     var res = await machineManager.editMachines(data);
     if (res["type"] == "success") {
