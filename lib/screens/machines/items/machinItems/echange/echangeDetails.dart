@@ -30,7 +30,7 @@ class _EchangeDetailsState extends State<EchangeDetails> {
       children: [
         HeadLine(
           title:
-              "Echange du machine : #${widget.echange[0]["machine"]["code"]}",
+              "Echange du machine",
           fontS: ResponsiveManager.setFont(context),
           color: kPrimaryColor,
           icon: Icons.compare_arrows,

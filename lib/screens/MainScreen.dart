@@ -160,7 +160,7 @@ class _MainScreenState extends State<MainScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 kLogoPrimaryXS(
-                                    cWidth: width > kMobileWidth ? 160 : 100)
+                                    cWidth: 100)
                               ],
                             ),
                             Text(
@@ -310,7 +310,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: Container(
                       color: CupertinoColors.white,
                       width: width,
-                      height: width > kMobileWidth ? height : height - 150,
+                      height: width > kMobileWidth ? height-100 : height - 150,
                       child: currentPage),
                 ),
               )

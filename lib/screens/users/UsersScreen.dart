@@ -104,13 +104,11 @@ class _UsersScreenState extends State<UsersScreen> {
                         ? LoadingComponent()
                         : const Icon(Icons.search),
                     onChange: (value) {
-                      Future.delayed(const Duration(milliseconds: 1500), () {
-                        setState(() {
-                          search = value;
-                          isLoading = true;
-                        });
-                        initUsers();
+                      setState(() {
+                        search = value;
+                        isLoading = true;
                       });
+                      initUsers();
                     }),
               ),
             ],
@@ -121,6 +119,7 @@ class _UsersScreenState extends State<UsersScreen> {
           Expanded(
               child: Container(
                 margin: const EdgeInsets.all(2),
+                padding: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: CupertinoColors.white,
@@ -145,16 +144,18 @@ class _UsersScreenState extends State<UsersScreen> {
                         Center(child: Text("Aucun utilisateur trouvé")),
                       ],
                     ))
-                    : ListView(
-                    physics: const BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(bottom: 16),
-                    children: users.map((e) {
-                      return UserCard(
-                        user: e,
-                        updateView: initUsers,
-                      );
-                    }).toList()),
+                    : Scrollbar(
+                      child: ListView(
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(bottom: 16),
+                      children: users.map((e) {
+                        return UserCard(
+                          user: e,
+                          updateView: initUsers,
+                        );
+                      }).toList()),
+                    ),
               ))
         ],
       ),

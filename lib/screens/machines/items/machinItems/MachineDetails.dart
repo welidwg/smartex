@@ -13,8 +13,10 @@ import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/Placeholders/FormPlaceholder.dart';
+import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/machinItems/History.dart';
+import 'package:smartex/screens/machines/items/machinItems/activities/ActivitiesScreen.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/HistoryEchanges.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/echangeDetails.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/echangeScreen.dart';
@@ -425,9 +427,11 @@ class _MachineDetailsState extends State<MachineDetails> {
                               ),
                               Text(
                                 "Machine est en échange avec la chaîne ${echangeActif[0]["chaine_to"]["libelle"]}",
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        ResponsiveManager.setFont(context)),
                               ),
                               const SizedBox(
                                 width: 4,
@@ -542,6 +546,25 @@ class _MachineDetailsState extends State<MachineDetails> {
                                               echanges:
                                                   widget.machine["echanges"],
                                             ));
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    MyActionButton(
+                                      icon: CupertinoIcons
+                                          .person_crop_circle_fill_badge_checkmark,
+                                      label: "Historique des activités",
+                                      color: kPrimaryColor,
+                                      onPressed: () {
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                        ModalManager.showModal(
+                                            context: context,
+                                            content: MachineActivitiesScreen(
+                                                activities: widget.machine[
+                                                    "historique_activite"]));
                                       },
                                     ),
                                   ],

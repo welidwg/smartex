@@ -64,7 +64,7 @@ class _TopBarState extends State<TopBar> {
                     widget.updater(const NotificationScreen());
                   },
                   child: Stack(
-                    alignment: Alignment.topRight,
+                    alignment: Alignment.center,
                     children: [
                       const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -73,25 +73,19 @@ class _TopBarState extends State<TopBar> {
                           color: kPrimaryColor,
                         ),
                       ),
-                      CircleAvatar(
-                        backgroundColor: kPrimaryColor,
-                        foregroundColor: Colors.white,
-                        maxRadius: 8,
-                        child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.transparent,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  "2",
-                                  style: TextStyle(
-                                      fontSize: 11, fontFamily: "Font1"),
-                                ),
-                              ],
-                            )),
+                      Positioned(
+                        top: 11,
+                        right: 12,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.redAccent,
+                          foregroundColor: Colors.red,
+                          maxRadius: 3,
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                              ),
+                              child: SizedBox()),
+                        ),
                       )
                     ],
                   ),

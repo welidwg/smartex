@@ -36,7 +36,6 @@ class _HistoryMachineState extends State<HistoryMachine> {
       ma = widget.machine;
     });
     widget.updateView();
-    print(ma["historique"]);
     estimations =
         await HistoryRequestManager.getEstimation({"id_machine": ma["id"]});
     if (estimations["type"]=="success") {
