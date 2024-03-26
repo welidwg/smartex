@@ -8,6 +8,7 @@ import 'package:smartex/components/Title.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
+import 'package:smartex/screens/qr/QrCodeScreen.dart';
 
 class AllMachineScreen extends StatefulWidget {
   const AllMachineScreen({super.key});
@@ -42,7 +43,7 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
+          builder: (ct) => QrCodeScreen(
                 setter: _setCode,
               )),
     );

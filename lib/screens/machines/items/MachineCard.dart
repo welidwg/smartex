@@ -78,7 +78,7 @@ class _MachineCardState extends State<MachineCard> {
                       Text(
                         widget.type == "re"
                             ? widget.item["ref"]
-                            : "${widget.item["reference"]["ref"]}#${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
+                            : "${widget.item["code"]} / ${widget.item["chaine"]["libelle"]}",
                         style: kContentTextStyle(
                                 customFontSize: width > kMobileWidth
                                     ? kTabletFont

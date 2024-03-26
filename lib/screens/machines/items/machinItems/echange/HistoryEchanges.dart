@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
-import 'package:smartex/screens/machines/items/machinItems/HistoryCard.dart';
+import 'package:smartex/screens/machines/items/machinItems/history/HistoryCard.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/ExchangeHistoryCard.dart';
 
 class HistoryEchanges extends StatefulWidget {

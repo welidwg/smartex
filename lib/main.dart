@@ -6,6 +6,7 @@ import 'package:smartex/screens/home/HomeScreen.dart';
 import 'package:smartex/screens/login/LoginScreen.dart';
 import 'package:smartex/screens/SplashScreen.dart';
 import 'package:smartex/screens/notification/NotificationService.dart';
+import 'package:smartex/screens/qr/QrCodeScreen.dart';
 import 'package:smartex/screens/users/UsersScreen.dart';
 
 void main() {
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         MainScreen.id: (context) => const MainScreen(),
         UsersScreen.id: (context) => UsersScreen(),
         CameraScreen.id: (context) => CameraScreen(),
+        QrCodeScreen.id: (context) => QrCodeScreen(),
       },
     );
   }

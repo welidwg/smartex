@@ -15,7 +15,7 @@ import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/components/Placeholders/FormPlaceholder.dart';
 import 'package:smartex/components/ResponsiveManager.dart';
 import 'package:smartex/constants.dart';
-import 'package:smartex/screens/machines/items/machinItems/History.dart';
+import 'package:smartex/screens/machines/items/machinItems/history/History.dart';
 import 'package:smartex/screens/machines/items/machinItems/activities/ActivitiesScreen.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/HistoryEchanges.dart';
 import 'package:smartex/screens/machines/items/machinItems/echange/echangeDetails.dart';

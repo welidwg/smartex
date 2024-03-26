@@ -13,7 +13,9 @@ import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/components/Placeholders/FormPlaceholder.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/ai/camera/CameraManager.dart';
 import 'package:smartex/screens/ai/camera/CameraScreen.dart';
+import 'package:smartex/screens/qr/QrCodeScreen.dart';
 import 'package:smartex/storage/LocalStorage.dart';
 
 class AddMachineForm extends StatefulWidget {
@@ -193,7 +195,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
                             vPadding: 17,
                             suffixIc: GestureDetector(
                               onTap: () async {
-                                await _openCameraScreen(context);
+                               await CameraManager.openCameraScreen(context, _setCode);
                               },
                               child: const Icon(Icons.qr_code_scanner_rounded),
                             )),
@@ -397,7 +399,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
+          builder: (context) => QrCodeScreen(
                 setter: _setCode,
               )),
     );

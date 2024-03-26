@@ -8,10 +8,12 @@ import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
 import 'package:smartex/components/Modals/ModalManager.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/screens/ai/camera/CameraManager.dart';
 import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 import 'package:smartex/screens/machines/items/forms/AddMachineForm.dart';
 import 'package:smartex/screens/machines/items/machinItems/AllMachines.dart';
+import 'package:smartex/screens/qr/QrCodeScreen.dart';
 
 class MachinesList extends StatefulWidget {
   const MachinesList({super.key});
@@ -29,18 +31,31 @@ class _MachinesListState extends State<MachinesList> {
   bool isLoading = true;
 
   initMachines() async {
-    machines = await manager.getMachinesList(search: search);
     setState(() {
-      isLoading = false;
+      isLoading=true;
     });
+    if(mounted){
+      machines = await manager.getMachinesList(search: search);
+      setState(() {
+        isLoading = false;
+      });
+    }
+
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     codeCtrl = TextEditingController(text: "");
-    initMachines();
+    if(mounted) {
+      initMachines();
+    }
   }
 
   @override
@@ -105,7 +120,8 @@ class _MachinesListState extends State<MachinesList> {
                         size: 20,
                       ),
                       onTap: () {
-                        _openCameraScreen(context);
+                        CameraManager.openCameraScreen(context, _setCode);
+                        //_openCameraScreen(context);
                       },
                     ),
                     label: "Code",
@@ -200,7 +216,7 @@ class _MachinesListState extends State<MachinesList> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
+          builder: (context) => QrCodeScreen(
                 setter: _setCode,
               )),
     );

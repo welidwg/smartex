@@ -168,8 +168,6 @@ class _CameraScreenState extends State<CameraScreen> {
         if (response.statusCode == 200) {
           var body = await response.stream.bytesToString();
           Map<String, dynamic> jsonResponse = json.decode(body);
-
-          print(body);
           widget.setter!(jsonResponse["text"][0]);
           setState(() {});
           ScaffoldMessenger.of(context)
