@@ -92,6 +92,7 @@ class _ReferencesListState extends State<ReferencesList> {
                 width: width / 3,
                 child: Input(
                     vPadding: 0,
+                    isEnabled: !isLoading,
                     hPadding: 7,
                     label: "Références",
                     is_Password: false,
@@ -99,7 +100,7 @@ class _ReferencesListState extends State<ReferencesList> {
                       setState(() {
                         search = value;
                       });
-                      initRefs();
+                      //initRefs();
                     }),
               ),
             ],
@@ -142,42 +143,52 @@ class _ReferencesListState extends State<ReferencesList> {
                       scrollDirection: Axis.horizontal,
                       //padding: EdgeInsets.only(bottom: 16),
                       children: references.map((e) {
-                        return MachineCard(
-                          type: "re",
-                          item: e,
-                          updateView: initRefs,
-                        );
+                        if (e["ref"]
+                            .toString()
+                            .toLowerCase()
+                            .contains(search.toLowerCase())) {
+                          return MachineCard(
+                            type: "re",
+                            item: e,
+                            updateView: initRefs,
+                          );
+                        } else {
+                          return Container();
+                        }
                       }).toList()),
         ),
         const SizedBox(
           height: 8,
         ),
-        GestureDetector(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  ModalManager.showModal(
-                      content: AllReferenceScreen(
-                        refs: references,
-                        updateView: initRefs,
+        !isLoading
+            ? GestureDetector(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        ModalManager.showModal(
+                            content: AllReferenceScreen(
+                              refs: references,
+                              updateView: initRefs,
+                            ),
+                            context: context);
+                      },
+                      child: Text(
+                        "Afficher tous",
+                        style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: width > kMobileWidth
+                                ? kTabletFont
+                                : kMobileFont),
                       ),
-                      context: context);
-                },
-                child: Text(
-                  "Afficher tous",
-                  style: TextStyle(
-                      color: kPrimaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize:
-                          width > kMobileWidth ? kTabletFont : kMobileFont),
+                    ),
+                    Icon(Icons.keyboard_arrow_down)
+                  ],
                 ),
-              ),
-              Icon(Icons.keyboard_arrow_down)
-            ],
-          ),
-        )
+              )
+            : Container()
       ],
     );
   }

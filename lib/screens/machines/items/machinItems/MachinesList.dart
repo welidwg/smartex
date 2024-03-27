@@ -16,7 +16,9 @@ import 'package:smartex/screens/machines/items/machinItems/AllMachines.dart';
 import 'package:smartex/screens/qr/QrCodeScreen.dart';
 
 class MachinesList extends StatefulWidget {
-  const MachinesList({super.key});
+  MachinesList({super.key, this.updateView});
+
+  Function? updateView;
 
   @override
   State<MachinesList> createState() => _MachinesListState();
@@ -32,15 +34,14 @@ class _MachinesListState extends State<MachinesList> {
 
   initMachines() async {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
-    if(mounted){
+    if (mounted) {
       machines = await manager.getMachinesList(search: search);
       setState(() {
         isLoading = false;
       });
     }
-
   }
 
   @override
@@ -48,12 +49,13 @@ class _MachinesListState extends State<MachinesList> {
     // TODO: implement dispose
     super.dispose();
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     codeCtrl = TextEditingController(text: "");
-    if(mounted) {
+    if (mounted) {
       initMachines();
     }
   }
@@ -112,6 +114,7 @@ class _MachinesListState extends State<MachinesList> {
                 width: width / 3,
                 child: Input(
                     controller: codeCtrl,
+                    isEnabled: !isLoading,
                     vPadding: 0,
                     hPadding: 7,
                     suffixIc: GestureDetector(
@@ -129,9 +132,9 @@ class _MachinesListState extends State<MachinesList> {
                     onChange: (value) {
                       setState(() {
                         search = value;
-                        isLoading = true;
+                        //isLoading = true;
                       });
-                      initMachines();
+                      //initMachines();
                     }),
               ),
             ],
@@ -170,35 +173,49 @@ class _MachinesListState extends State<MachinesList> {
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       children: machines.map((e) {
-                        return MachineCard(
-                          type: "ma",
-                          item: e,
-                          updateView: initMachines,
-                        );
+                        if (e["code"]
+                            .toString()
+                            .toLowerCase()
+                            .contains(search.toLowerCase())) {
+                          return MachineCard(
+                            type: "ma",
+                            item: e,
+                            updateView: initMachines,
+                          );
+                        } else {
+                          return Container();
+                        }
                       }).toList()),
         ),
         const SizedBox(
           height: 8,
         ),
-        GestureDetector(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                child:  Text(
-                  "Afficher tous",
-                  style: TextStyle(
-                      color: kPrimaryColor, fontWeight: FontWeight.bold,fontSize: width>kMobileWidth ? kTabletFont : kMobileFont ),
+        !isLoading
+            ? GestureDetector(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      child: Text(
+                        "Afficher tous",
+                        style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: width > kMobileWidth
+                                ? kTabletFont
+                                : kMobileFont),
+                      ),
+                      onTap: () {
+                        ModalManager.showModal(
+                            content: AllMachineScreen(machines: machines),
+                            context: context);
+                      },
+                    ),
+                    const Icon(Icons.keyboard_arrow_down)
+                  ],
                 ),
-                onTap: () {
-                  ModalManager.showModal(
-                      content: const AllMachineScreen(), context: context);
-                },
-              ),
-              const Icon(Icons.keyboard_arrow_down)
-            ],
-          ),
-        )
+              )
+            : Container()
       ],
     );
   }

@@ -62,7 +62,7 @@ class _MachineCardState extends State<MachineCard> {
         },
         child: CustomCard(
           padding: 10,
-          width: width > kMobileWidth ? width / 5 : width * 0.6,
+          width: widget.type=="re" ? width > kMobileWidth ? width / 6 : width * 0.4 : width > kMobileWidth ? width / 5 : width * 0.5,
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

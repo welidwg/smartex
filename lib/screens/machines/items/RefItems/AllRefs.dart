@@ -11,10 +11,10 @@ import 'package:smartex/screens/ai/camera/CameraScreen.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
 
 class AllReferenceScreen extends StatefulWidget {
-  late List<dynamic> refs;
+  late List<dynamic> refs = [];
   late Function updateView;
 
-  AllReferenceScreen({super.key, required refs, required this.updateView});
+  AllReferenceScreen({super.key, required this.refs, required this.updateView});
 
   @override
   State<AllReferenceScreen> createState() => _AllReferenceScreenState();
@@ -28,7 +28,8 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
   bool isLoading = true;
 
   initRefs() async {
-    references = await manager.getRefsList(search: search);
+    //references = await manager.getRefsList(search: search);
+    references = widget.refs;
     setState(() {
       isLoading = false;
     });
@@ -104,11 +105,18 @@ class _AllReferenceScreenState extends State<AllReferenceScreen> {
                       scrollDirection: Axis.vertical,
                       //padding: EdgeInsets.only(bottom: 16),
                       children: references.map((e) {
-                        return MachineCard(
-                          type: "re",
-                          item: e,
-                          updateView: widget.updateView,
-                        );
+                        if (e["ref"]
+                            .toString()
+                            .toLowerCase()
+                            .contains(search.toLowerCase())) {
+                          return MachineCard(
+                            type: "re",
+                            item: e,
+                            updateView: widget.updateView,
+                          );
+                        } else {
+                          return Container();
+                        }
                       }).toList()),
         )
       ],

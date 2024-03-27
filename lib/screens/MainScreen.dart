@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
       if (currentPage.runtimeType == NotificationScreen) {
         setState(() {
           currentPage = KeyedSubtree(
-            key:Key("${UniqueKey()}"),
+            key: Key("${UniqueKey()}"),
             child: const NotificationScreen(),
           );
         });
@@ -158,10 +158,7 @@ class _MainScreenState extends State<MainScreen> {
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                kLogoPrimaryXS(
-                                    cWidth: 100)
-                              ],
+                              children: [kLogoPrimaryXS(cWidth: 100)],
                             ),
                             Text(
                               "Smartex",
@@ -195,12 +192,18 @@ class _MainScreenState extends State<MainScreen> {
                                         spreadRadius: 0.4)
                                   ]),
                               child: ListTile(
+                                selected: currentPage.runtimeType == HomeScreen,
+                                selectedColor: kPrimaryColor,
                                 leading: const Icon(Icons.house),
-                                title: Text('Accueil',
-                                    style: currentPage.toString() ==
-                                            const HomeScreen().toString()
-                                        ? kActive
-                                        : kInActive),
+                                title: Text(
+                                  'Accueil',
+                                  style: TextStyle(
+                                      fontFamily: "Font1",
+                                      fontWeight: currentPage.runtimeType ==
+                                          HomeScreen
+                                          ? FontWeight.bold
+                                          : FontWeight.normal),
+                                ),
                                 onTap: () {
                                   setState(() {
                                     currentPage = const HomeScreen();
@@ -224,14 +227,19 @@ class _MainScreenState extends State<MainScreen> {
                                         spreadRadius: 0.4)
                                   ]),
                               child: ListTile(
+                                selected:
+                                    currentPage.runtimeType == UsersScreen,
+                                selectedColor: kPrimaryColor,
                                 leading: const Icon(
                                     Icons.supervised_user_circle_outlined),
                                 title: Text(
                                   'Utilisateurs',
-                                  style: currentPage.toString() ==
-                                          UsersScreen().toString()
-                                      ? kActive
-                                      : kInActive,
+                                  style: TextStyle(
+                                      fontFamily: "Font1",
+                                      fontWeight: currentPage.runtimeType ==
+                                          UsersScreen
+                                          ? FontWeight.bold
+                                          : FontWeight.normal),
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -259,13 +267,19 @@ class _MainScreenState extends State<MainScreen> {
                                         spreadRadius: 0.4)
                                   ]),
                               child: ListTile(
-                                leading: const Icon(CupertinoIcons.gear_big),
+                                leading:
+                                    const Icon(CupertinoIcons.gear_alt_fill),
+                                selected:
+                                    currentPage.runtimeType == MachinesScreen,
+                                selectedColor: kPrimaryColor,
                                 title: Text(
                                   'Machines',
-                                  style: currentPage.toString() ==
-                                          const MachinesScreen().toString()
-                                      ? kActive
-                                      : kInActive,
+                                  style: TextStyle(
+                                      fontFamily: "Font1",
+                                      fontWeight: currentPage.runtimeType ==
+                                              MachinesScreen
+                                          ? FontWeight.bold
+                                          : FontWeight.normal),
                                 ),
                                 onTap: () {
                                   setState(() {
@@ -310,7 +324,8 @@ class _MainScreenState extends State<MainScreen> {
                   child: Container(
                       color: CupertinoColors.white,
                       width: width,
-                      height: width > kMobileWidth ? height-100 : height - 150,
+                      height:
+                          width > kMobileWidth ? height - 100 : height - 150,
                       child: currentPage),
                 ),
               )

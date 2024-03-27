@@ -70,15 +70,17 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                                     children: [
                                       Row(
                                         children: [
-                                          Text(
-                                            "${widget.user["activities"][index]["activite"]}",
-                                            style: TextStyle(
-                                                fontSize:
-                                                    ResponsiveManager.setFont(
-                                                            context) -
-                                                        1,
-                                                fontWeight: FontWeight.bold,
-                                                color: kPrimaryColor),
+                                          Expanded(
+                                            child: Text(
+                                              "${widget.user["activities"][index]["activite"]}",
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      ResponsiveManager.setFont(
+                                                              context) -
+                                                          1,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: kPrimaryColor),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -98,7 +100,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                                                       color: kPrimaryColor),
                                                 ),
                                                 Text(
-                                                  "${widget.user["activities"][index]["machine"]["reference"]["ref"]}#${widget.user["activities"][index]["machine"]["code"]} / ${widget.user["activities"][index]["machine"]["chaine"]["libelle"]}",
+                                                  "${widget.user["activities"][index]["machine"]["code"]} / ${widget.user["activities"][index]["machine"]["chaine"]["libelle"]}",
                                                   style: TextStyle(
                                                       fontSize:
                                                           ResponsiveManager

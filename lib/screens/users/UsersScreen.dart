@@ -43,17 +43,16 @@ class _UsersScreenState extends State<UsersScreen> {
 
   initUsers() async {
     users = await manager.getUsersList(search: search);
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final width = MediaQuery.of(context).size.width;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
@@ -72,11 +71,12 @@ class _UsersScreenState extends State<UsersScreen> {
               FloatingActionButton(
                 heroTag: "addUserTag",
                 onPressed: () {
-                  ModalManager.showModal(content: AddUserForm(
-                    context: context,
-                    updateView: initUsers,
-                  ), context: context);
-
+                  ModalManager.showModal(
+                      content: AddUserForm(
+                        context: context,
+                        updateView: initUsers,
+                      ),
+                      context: context);
                 },
                 elevation: 0,
                 backgroundColor: kPrimaryColor.withOpacity(1),
@@ -106,9 +106,9 @@ class _UsersScreenState extends State<UsersScreen> {
                     onChange: (value) {
                       setState(() {
                         search = value;
-                        isLoading = true;
+                        //isLoading = true;
                       });
-                      initUsers();
+                      // initUsers();
                     }),
               ),
             ],
@@ -118,45 +118,52 @@ class _UsersScreenState extends State<UsersScreen> {
           ),
           Expanded(
               child: Container(
-                margin: const EdgeInsets.all(2),
-                padding: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: CupertinoColors.white,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: kSecondaryColor,
-                      spreadRadius: 2,
-                      blurRadius: 2,
-                      offset: Offset(1, 1),
-                    ),
-                  ],
+            margin: const EdgeInsets.all(2),
+            padding: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: CupertinoColors.white,
+              boxShadow: const [
+                BoxShadow(
+                  color: kSecondaryColor,
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  offset: Offset(1, 1),
                 ),
-                child: isLoading
-                    ? ListPlaceholder()
-                    : users.isEmpty
+              ],
+            ),
+            child: isLoading
+                ? ListPlaceholder()
+                : users.isEmpty
                     ? SizedBox(
-                    width: width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Center(child: Text("Aucun utilisateur trouvé")),
-                      ],
-                    ))
+                        width: width,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Center(child: Text("Aucun utilisateur trouvé")),
+                          ],
+                        ))
                     : Scrollbar(
-                      child: ListView(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(bottom: 16),
-                      children: users.map((e) {
-                        return UserCard(
-                          user: e,
-                          updateView: initUsers,
-                        );
-                      }).toList()),
-                    ),
-              ))
+                        child: ListView(
+                            physics: const BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.only(bottom: 16),
+                            children: users.map((e) {
+                              if (e["username"]
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(search.toLowerCase())) {
+                                return UserCard(
+                                  user: e,
+                                  updateView: initUsers,
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }).toList()),
+                      ),
+          ))
         ],
       ),
     );

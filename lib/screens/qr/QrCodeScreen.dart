@@ -34,7 +34,7 @@ class _QrCodeScreenState extends State<QrCodeScreen> {
           result != null
               ? Text(
                   result!.code.toString(),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 )
               : Container(),
           Expanded(

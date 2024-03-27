@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smartex/Api/machines/MachinesRequestManager.dart';
+import 'package:smartex/Api/references/ReferencesRequestManager.dart';
 import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/Cards/Card.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/components/Loading.dart';
 import 'package:smartex/components/Modals/ModalContent.dart';
+import 'package:smartex/components/Placeholders/ListPlaceHolder.dart';
 import 'package:smartex/components/Titles/HeadLine.dart';
 import 'package:smartex/constants.dart';
 import 'package:smartex/screens/machines/items/MachineCard.dart';
@@ -24,18 +27,10 @@ class MachinesScreen extends StatefulWidget {
 }
 
 class _MachinesScreenState extends State<MachinesScreen> {
-  bool refresh = false;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-  }
-
-  updateView(bool newVal) {
-    setState(() {
-      refresh = newVal;
-    });
   }
 
   @override
@@ -52,7 +47,7 @@ class _MachinesScreenState extends State<MachinesScreen> {
               HeadLine(
                 title: "Machines et références",
                 fontS:
-                    width > kMobileWidth ? kTabletFont+3 : kMobileTitleFont ,
+                    width > kMobileWidth ? kTabletFont + 3 : kMobileTitleFont,
                 icon: CupertinoIcons.gear_solid,
                 color: kPrimaryColor,
               ),
@@ -60,9 +55,17 @@ class _MachinesScreenState extends State<MachinesScreen> {
             const SizedBox(
               height: 10,
             ),
-            const ReferencesList(),
-            const CustomSpacer(),
-            const MachinesList()
+            Column(
+              children: [
+                const ReferencesList(),
+                const CustomSpacer(),
+                MachinesList(
+                  updateView: () {
+                    print("update from machien screen");
+                  },
+                ),
+              ],
+            ),
           ],
         ));
   }

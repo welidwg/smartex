@@ -7,6 +7,7 @@ import 'package:smartex/components/Button.dart';
 import 'package:smartex/components/CustomSpacer.dart';
 import 'package:smartex/components/Input.dart';
 import 'package:smartex/constants.dart';
+import 'package:smartex/storage/LocalStorage.dart';
 
 class AddHistoryForm extends StatefulWidget {
   late int? idMachine;
@@ -158,10 +159,12 @@ class _AddHistoryFormState extends State<AddHistoryForm> {
   }
 
   addHistory(BuildContext context) async {
+    var user=await LocalStorage.getUser();
     Map<String, dynamic> data = {
       'id_machine': widget.idMachine,
       'date_heure': dateTimeCtrl.text,
-      'historique': historyCtrl.text
+      'historique': historyCtrl.text,
+      'added_by':user["id"],
     };
     var res = await HistoryRequestManager.addHistory(data);
     if (res["type"] == "success") {

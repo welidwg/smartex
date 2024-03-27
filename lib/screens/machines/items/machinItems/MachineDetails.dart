@@ -88,7 +88,7 @@ class _MachineDetailsState extends State<MachineDetails> {
     // TODO: implement initState
     super.initState();
     parcs[0] = "Parc stock";
-    parcs[1] = "Parc chaine";
+    parcs[1] = "Chaîne";
     codeCtrl = TextEditingController(text: widget.machine["code"]);
     initList();
   }
@@ -99,7 +99,9 @@ class _MachineDetailsState extends State<MachineDetails> {
 
     return Column(
       children: isLoading
-          ? [const FormPlaceHolder()]
+          ? [
+              const FormPlaceHolder(),
+            ]
           : [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -109,7 +111,7 @@ class _MachineDetailsState extends State<MachineDetails> {
                     width: 2,
                   ),
                   Text(
-                    "${widget.machine["reference"]["ref"]}#${widget.machine["code"]}",
+                    "Machine ${widget.machine["code"]}",
                     style: kTitleTextStyle(
                         customFontSize: width > kMobileWidth
                             ? kTabletFont - 2
@@ -118,111 +120,111 @@ class _MachineDetailsState extends State<MachineDetails> {
                 ],
               ),
               const SizedBox(
-                height: 8,
+                height: 15,
               ),
               targetDate != null
                   ? targetDate!.difference(aujourdhui).inDays <= 7 &&
                           targetDate!.difference(aujourdhui).inDays >= 0
-                      ? Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              color: Colors.redAccent.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      ? GestureDetector(
+                          onTap: () {
+                            ModalManager.showModal(
+                                context: context,
+                                content: HistoryMachine(
+                                  updateView: widget.updateView,
+                                  machine: widget.machine,
+                                ));
+                          },
+                          child: Column(
                             children: [
-                              const Icon(
-                                Icons.warning_rounded,
-                                color: kPrimaryColor,
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.redAccent.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.warning_rounded,
+                                      color: kPrimaryColor,
+                                    ),
+                                    const SizedBox(
+                                      width: 3,
+                                    ),
+                                    Expanded(
+                                        child: Text(
+                                      "Cette machine peut tomber en panne dans ${targetDate?.difference(aujourdhui).inDays != 0 ? "${targetDate?.difference(aujourdhui).inDays} ${targetDate?.difference(aujourdhui).inDays == 1 ? "jour" : "jours"}" : "aujourd'hui"}",
+                                      style:
+                                          const TextStyle(color: kPrimaryColor),
+                                    ))
+                                  ],
+                                ),
                               ),
                               const SizedBox(
-                                width: 3,
+                                height: 5,
                               ),
-                              Expanded(
-                                  child: Text(
-                                "Cette machine peut tomber en panne dans ${targetDate?.difference(aujourdhui).inDays != 0 ? "${targetDate?.difference(aujourdhui).inDays} jours" : "aujourd'hui"}",
-                                style: const TextStyle(color: kPrimaryColor),
-                              ))
                             ],
                           ),
                         )
-                      : const SizedBox(
-                          height: 0,
-                        )
+                      : const SizedBox()
                   : const SizedBox(
                       height: 8,
                     ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Référence",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: kPrimaryColor),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  refs.isEmpty
-                      ? kPlaceholder
-                      : Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 19),
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: kPrimaryColor, width: 2),
-                              borderRadius: BorderRadius.circular(7)),
-                          child: DropdownButton(
-                              elevation: 0,
-                              underline: Container(),
-                              dropdownColor: kSecondaryColor,
-                              style: const TextStyle(
-                                  color: kPrimaryColor, fontFamily: "Font1"),
-                              borderRadius: BorderRadius.circular(10),
-                              isExpanded: true,
-                              value: defaultRef,
-                              onTap: () {
-                                setState(() {});
-                              },
-                              icon: const Icon(Icons.arrow_drop_down),
-                              items: refs.map((value) {
-                                return DropdownMenuItem(
-                                  value: value["id"],
-                                  child: Text(
-                                    value["ref"],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            width > kMobileWidth ? 18 : 13,
-                                        fontFamily: "Font1"),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (dynamic newVal) {
-                                setState(() {
-                                  defaultRef = newVal;
-                                });
-                                // widget.setter!(int.parse(newVal));
-                              }),
+              if (isActiveExchange)
+                GestureDetector(
+                  onTap: () {
+                    ModalManager.showModal(
+                        context: context,
+                        content: EchangeDetails(
+                            echange: echangeActif,
+                            updateView: widget.updateView));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 13, top: 5),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.info_outlined,
+                          color: kPrimaryColor,
                         ),
-                ],
-              ),
-              const SizedBox(
-                height: 8,
-              ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Expanded(
+                          child: Text(
+                            "Machine est en échange avec la chaîne ${echangeActif[0]["chaine_to"]["libelle"]}",
+                            style: TextStyle(
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        const Icon(
+                          Icons.arrow_forward_ios_sharp,
+                          size: 15,
+                          color: kPrimaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(
+                  height: 10,
+                ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Code",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: kPrimaryColor),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
                   Input(
                     label: "Code",
                     is_Password: false,
@@ -233,221 +235,265 @@ class _MachineDetailsState extends State<MachineDetails> {
                 ],
               ),
               const SizedBox(
-                height: 8,
+                height: 16,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  const Text(
-                    "Modifier l'état",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: kPrimaryColor),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  etats.isEmpty
-                      ? kPlaceholder
-                      : Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 19),
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: kPrimaryColor, width: 2),
-                              borderRadius: BorderRadius.circular(7)),
-                          child: DropdownButton(
-                              underline: Container(),
-                              elevation: 0,
-                              dropdownColor: kSecondaryColor,
-                              style: const TextStyle(
-                                  color: kPrimaryColor, fontFamily: "Font1"),
-                              borderRadius: BorderRadius.circular(10),
-                              isExpanded: true,
-                              value: defaultEtat,
-                              onTap: () {
-                                setState(() {});
-                              },
-                              icon: const Icon(Icons.arrow_drop_down),
-                              items: etats.map((value) {
-                                return DropdownMenuItem(
-                                  value: value["id"],
-                                  child: Text(
-                                    value["libelle"],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            width > kMobileWidth ? 18 : 13,
-                                        fontFamily: "Font1"),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (dynamic newVal) {
-                                setState(() {
-                                  defaultEtat = newVal;
-                                });
-                                // widget.setter!(int.parse(newVal));
-                              }),
-                        ),
-                ],
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Chaîne",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: kPrimaryColor),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  chaines.isEmpty
-                      ? kPlaceholder
-                      : Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 19),
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: kPrimaryColor, width: 2),
-                              borderRadius: BorderRadius.circular(7)),
-                          child: DropdownButton(
-                              elevation: 0,
-                              underline: Container(),
-                              dropdownColor: kSecondaryColor,
-                              style: const TextStyle(
-                                  color: kPrimaryColor, fontFamily: "Font1"),
-                              borderRadius: BorderRadius.circular(10),
-                              isExpanded: true,
-                              value: defaultChaine,
-                              onTap: () {
-                                setState(() {});
-                              },
-                              icon: const Icon(Icons.arrow_drop_down),
-                              items: chaines.map((value) {
-                                return DropdownMenuItem(
-                                  value: value["id"],
-                                  child: Text(
-                                    value["libelle"],
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            width > kMobileWidth ? 18 : 13,
-                                        fontFamily: "Font1"),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (dynamic newVal) {
-                                setState(() {
-                                  defaultChaine = newVal;
-                                });
-                                // widget.setter!(int.parse(newVal));
-                              }),
-                        ),
-                ],
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Parc",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: kPrimaryColor),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 19),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: kPrimaryColor, width: 2),
-                        borderRadius: BorderRadius.circular(7)),
-                    child: DropdownButton(
-                        underline: Container(),
-                        elevation: 0,
-                        dropdownColor: kSecondaryColor,
-                        style: const TextStyle(
-                            color: kPrimaryColor, fontFamily: "Font1"),
-                        borderRadius: BorderRadius.circular(10),
-                        isExpanded: true,
-                        value: defaultParc,
-                        onTap: () {
-                          setState(() {});
-                        },
-                        icon: const Icon(Icons.arrow_drop_down),
-                        items: parcs.keys.map((int value) {
-                          return DropdownMenuItem(
-                            value: value,
-                            child: Text(
-                              parcs[value],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width > kMobileWidth ? 18 : 13,
-                                  fontFamily: "Font1"),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (dynamic newVal) {
-                          setState(() {
-                            defaultParc = newVal;
-                          });
-                          // widget.setter!(int.parse(newVal));
-                        }),
-                  ),
-                  if (isActiveExchange)
-                    Column(
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          height: 14,
+                        const Text(
+                          "Référence",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            ModalManager.showModal(
-                                context: context,
-                                content: EchangeDetails(
-                                    echange: echangeActif,
-                                    updateView: widget.updateView));
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.info_outlined,
-                                size: 15,
-                                color: kPrimaryColor,
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        refs.isEmpty
+                            ? kPlaceholder
+                            : Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 19),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: kPrimaryColor, width: 2),
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: DropdownButton(
+                                    elevation: 0,
+                                    underline: Container(),
+                                    dropdownColor: kSecondaryColor,
+                                    style: const TextStyle(
+                                        color: kPrimaryColor,
+                                        fontFamily: "Font1"),
+                                    borderRadius: BorderRadius.circular(10),
+                                    isExpanded: true,
+                                    value: defaultRef,
+                                    onTap: () {
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    items: refs.map((value) {
+                                      return DropdownMenuItem(
+                                        value: value["id"],
+                                        child: Text(
+                                          value["ref"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width > kMobileWidth
+                                                  ? 18
+                                                  : 13,
+                                              fontFamily: "Font1"),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (dynamic newVal) {
+                                      setState(() {
+                                        defaultRef = newVal;
+                                      });
+                                      // widget.setter!(int.parse(newVal));
+                                    }),
                               ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                "Machine est en échange avec la chaîne ${echangeActif[0]["chaine_to"]["libelle"]}",
-                                style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        ResponsiveManager.setFont(context)),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              const Icon(
-                                Icons.arrow_forward_ios_sharp,
-                                size: 15,
-                                color: kPrimaryColor,
-                              ),
-                            ],
-                          ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 7,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Parc",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 19),
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: kPrimaryColor, width: 2),
+                              borderRadius: BorderRadius.circular(7)),
+                          child: DropdownButton(
+                              underline: Container(),
+                              elevation: 0,
+                              dropdownColor: kSecondaryColor,
+                              style: const TextStyle(
+                                  color: kPrimaryColor, fontFamily: "Font1"),
+                              borderRadius: BorderRadius.circular(10),
+                              isExpanded: true,
+                              value: defaultParc,
+                              onTap: () {
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.arrow_drop_down),
+                              items: parcs.keys.map((int value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    parcs[value],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            width > kMobileWidth ? 18 : 13,
+                                        fontFamily: "Font1"),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (dynamic newVal) {
+                                setState(() {
+                                  defaultParc = newVal;
+                                });
+                                // widget.setter!(int.parse(newVal));
+                              }),
                         ),
                       ],
-                    )
-                  else
-                    const SizedBox(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Etat de machine",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        etats.isEmpty
+                            ? kPlaceholder
+                            : Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 19),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: kPrimaryColor, width: 2),
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: DropdownButton(
+                                    underline: Container(),
+                                    elevation: 0,
+                                    dropdownColor: kSecondaryColor,
+                                    style: const TextStyle(
+                                        color: kPrimaryColor,
+                                        fontFamily: "Font1"),
+                                    borderRadius: BorderRadius.circular(10),
+                                    isExpanded: true,
+                                    value: defaultEtat,
+                                    onTap: () {
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    items: etats.map((value) {
+                                      return DropdownMenuItem(
+                                        value: value["id"],
+                                        child: Text(
+                                          value["libelle"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width > kMobileWidth
+                                                  ? 18
+                                                  : 13,
+                                              fontFamily: "Font1"),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (dynamic newVal) {
+                                      setState(() {
+                                        defaultEtat = newVal;
+                                      });
+                                      // widget.setter!(int.parse(newVal));
+                                    }),
+                              ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Chaîne",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        chaines.isEmpty
+                            ? kPlaceholder
+                            : Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 19),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: kPrimaryColor, width: 2),
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: DropdownButton(
+                                    elevation: 0,
+                                    underline: Container(),
+                                    dropdownColor: kSecondaryColor,
+                                    style: const TextStyle(
+                                        color: kPrimaryColor,
+                                        fontFamily: "Font1"),
+                                    borderRadius: BorderRadius.circular(10),
+                                    isExpanded: true,
+                                    value: defaultChaine,
+                                    onTap: () {
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    items: chaines.map((value) {
+                                      return DropdownMenuItem(
+                                        value: value["id"],
+                                        child: Text(
+                                          value["libelle"],
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width > kMobileWidth
+                                                  ? 18
+                                                  : 13,
+                                              fontFamily: "Font1"),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (dynamic newVal) {
+                                      setState(() {
+                                        defaultChaine = newVal;
+                                      });
+                                      // widget.setter!(int.parse(newVal));
+                                    }),
+                              ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
                 ],
               ),
               const CustomSpacer(),
@@ -627,11 +673,13 @@ class _MachineDetailsState extends State<MachineDetails> {
     };
     var res = await machineManager.editMachines(data);
     if (res["type"] == "success") {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(res['message'])));
-      setState(() {});
-      widget.updateView();
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(res['message'])));
+        setState(() {});
+        widget.updateView();
+      }
     } else {
       print(res['message']);
     }

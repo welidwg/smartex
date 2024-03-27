@@ -77,6 +77,7 @@ class ApiManager {
         return jsonDecode(response.body.toString());
       }
     } on Exception catch (e) {
+      print(e);
       return jsonDecode('{"type":"error","message":"Erreur de serveur"}');
     }
   }

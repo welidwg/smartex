@@ -11,7 +11,9 @@ import 'package:smartex/screens/machines/items/MachineCard.dart';
 import 'package:smartex/screens/qr/QrCodeScreen.dart';
 
 class AllMachineScreen extends StatefulWidget {
-  const AllMachineScreen({super.key});
+  AllMachineScreen({super.key, required this.machines});
+
+  late List<dynamic> machines = [];
 
   @override
   State<AllMachineScreen> createState() => _AllMachineScreenState();
@@ -25,7 +27,8 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
   bool isLoading = true;
 
   initMachines() async {
-    machines = await manager.getMachinesList(search: search);
+    //machines = await manager.getMachinesList(search: search);
+    machines = widget.machines;
     setState(() {
       isLoading = false;
     });
@@ -50,13 +53,13 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
   }
 
   void _setCode(String value) {
-    String noSpace=value.replaceAll(RegExp(r'\s+'), '');
+    String noSpace = value.replaceAll(RegExp(r'\s+'), '');
 
     setState(() {
       codeCtrl = TextEditingController(text: noSpace);
-      search=noSpace;
+      search = noSpace;
     });
-    initMachines();
+    //initMachines();
   }
 
   @override
@@ -123,11 +126,18 @@ class _AllMachineScreenState extends State<AllMachineScreen> {
                       scrollDirection: Axis.vertical,
                       //padding: EdgeInsets.only(bottom: 16),
                       children: machines.map((e) {
-                        return MachineCard(
-                          type: "ma",
-                          item: e,
-                          updateView: initMachines,
-                        );
+                        if (e["code"]
+                            .toString()
+                            .toLowerCase()
+                            .contains(search.toLowerCase())) {
+                          return MachineCard(
+                            type: "ma",
+                            item: e,
+                            updateView: initMachines,
+                          );
+                        } else {
+                          return Container();
+                        }
                       }).toList()),
         )
       ],

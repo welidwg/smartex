@@ -71,7 +71,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
     super.initState();
     codeCtrl = TextEditingController(text: code);
     parcs[0] = "Parc stock";
-    parcs[1] = "Parc occupé";
+    parcs[1] = "Chaîne";
     initList();
   }
 
@@ -145,6 +145,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
                                     borderRadius: BorderRadius.circular(10),
                                     isExpanded: true,
                                     value: defaultRef,
+                                    underline:Container(),
                                     onTap: () {
                                       setState(() {});
                                     },
@@ -232,6 +233,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
                                     borderRadius: BorderRadius.circular(10),
                                     isExpanded: true,
                                     value: defaultEtat,
+                                    underline:Container(),
                                     onTap: () {
                                       setState(() {});
                                     },
@@ -290,6 +292,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
                                     borderRadius: BorderRadius.circular(10),
                                     isExpanded: true,
                                     value: defaultChaine,
+                                    underline:Container(),
                                     onTap: () {
                                       setState(() {});
                                     },
@@ -348,6 +351,7 @@ class _AddMachineFormState extends State<AddMachineForm> {
                                     borderRadius: BorderRadius.circular(10),
                                     isExpanded: true,
                                     value: defaultParc,
+                                    underline:Container(),
                                     onTap: () {
                                       setState(() {});
                                     },

@@ -94,7 +94,7 @@ class _LinkedMachinesState extends State<LinkedMachines> {
                   )
                 : ListView.builder(
                     itemBuilder: (context, index) {
-                      if(widget.ref["machines"][index]["code"].toString().contains(search)){
+                      if(widget.ref["machines"][index]["code"].toString().toLowerCase().contains(search.toLowerCase())){
                         return MachineCard(
                           type: "ma",
                           item: widget.ref["machines"][index],
